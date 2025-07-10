@@ -1,7 +1,7 @@
 import React, { createContext, useContext } from 'react';
 
 // for Docker use DEV_MODE=true and change Annotating component 
-const DEV_MODE = false; 
+const DEV_MODE = true; 
 
 const VarsContext = createContext({
     DEV_MODE: DEV_MODE,

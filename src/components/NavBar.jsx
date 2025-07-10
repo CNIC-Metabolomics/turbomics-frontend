@@ -10,11 +10,11 @@ import { useVars } from './VarsContext';
 import Image from 'next/image';
 
 export default function MyNavBar() {
-    
-    const BASE_URL = useVars().BASE_URL;
+
+    const { BASE_URL, SERVER_URL } = useVars();
 
     return (
-        <Navbar bg="dark" data-bs-theme="dark" className="bg-body-tertiary" style={{fontSize:"1.2em"}}>
+        <Navbar bg="dark" data-bs-theme="dark" className="bg-body-tertiary" style={{ fontSize: "1.2em" }}>
             <Container className='mx-0'>
                 <Navbar.Brand href="#home">
                     <Image
@@ -29,11 +29,12 @@ export default function MyNavBar() {
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
                         <Nav.Link href="home" className='mx-2'>Home</Nav.Link>
-                        <Nav.Link href="TurbOmicsApp.html" active className='mx-2'>TurbOmics</Nav.Link>
                         <Nav.Link href="webserver" className='mx-2'>TurboPutative</Nav.Link>
+                        <Nav.Link href="TurbOmicsApp.html" active className='mx-2'>TurbOmics</Nav.Link>
                         <Nav.Link href="webservices" className='mx-2'>Web Services</Nav.Link>
                         <NavDropdown title="Help" id="basic-nav-dropdown">
                             <NavDropdown.Item href="webserverhelp">TurboPutative</NavDropdown.Item>
+                            <NavDropdown.Item href={`${SERVER_URL}/turbomicshelp`}>TurbOmics</NavDropdown.Item>
                             <NavDropdown.Item href="webserviceshelp">Web Services</NavDropdown.Item>
                             <NavDropdown.Divider />
                             <NavDropdown.Item href="moduleshelp">Modules</NavDropdown.Item>
@@ -43,7 +44,7 @@ export default function MyNavBar() {
                 </Navbar.Collapse>
             </Container>
             <Navbar.Collapse className="justify-content-end" >
-                <Navbar.Brand href="" style={{fontSize:"1.2em", userSelect:'none'}}>TurbOmics</Navbar.Brand>
+                <Navbar.Brand href="" style={{ fontSize: "1.2em", userSelect: 'none' }}>TurbOmics</Navbar.Brand>
             </Navbar.Collapse>
         </Navbar>
     );
