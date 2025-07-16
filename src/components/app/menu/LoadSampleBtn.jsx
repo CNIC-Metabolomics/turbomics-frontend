@@ -7,7 +7,7 @@ import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 
 export default function LoadSampleBtn() {
 
-    const { API_URL } = useVars();
+    const { API_URL, SERVER_URL } = useVars();
     const dispatchJob = useDispatchJob();
 
     const handleClick = async e => {
@@ -61,16 +61,31 @@ export default function LoadSampleBtn() {
             </Box>
             <Box sx={{ textAlign: 'center', mt: 1 }}>
                 <Link href='#' onClick={handleDownload}>
-                    Download Sample Data
+                    Download sample data
                 </Link>
             </Box>
-            <Box sx={{ textAlign: 'center', mt: 1 }}>
-                <Link
-                    href='https://github.com/CNIC-Proteomics/TurboOmics/blob/main/LICENSE.md'
-                    target='_blank'
-                >
-                    License
-                </Link>
+            <Box sx={{
+                display: 'flex',
+                justifyContent: 'space-evenly',
+                textAlign: 'center', mt: 1,
+            }}
+            >
+                <Box>
+                    <Link
+                        href={`${SERVER_URL}/turbomicshelp`}
+                        target='_self'
+                    >
+                        Help
+                    </Link>
+                </Box>
+                <Box>
+                    <Link
+                        href='https://github.com/CNIC-Proteomics/TurboOmics/blob/main/LICENSE.md'
+                        target='_blank'
+                    >
+                        License
+                    </Link>
+                </Box>
             </Box>
         </Box>
     )
