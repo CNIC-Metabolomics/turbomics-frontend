@@ -92,21 +92,24 @@ const MultiAssayExperiment = () => {
     }
 
     return (<>
-        <Box sx={{ width: 0, position: 'relative', left: -230 }}>
+        <Box sx={{ position: 'relative', left: -40 }}>
             <Card
                 sx={{
                     ...style,
-                    width: 200,
+                    display: 'flex', justifyContent: 'center',
+                    width: 230,
                     transition: "transform 0.15s ease-in-out, background 0.15s",
                     '&:hover': { backgroundColor: 'rgba(0,0,0,0.2)', transform: "scale3d(1.02, 1.02, 1)" }
                 }}
                 onClick={() => setOpenDialog(true)}
             >
-                <Box sx={{ pt: 1 }}>
-                    <img width={30} src={`${BASE_URL}/R.ico`} style={{ opacity: 0.7 }} alt="R" />
-                </Box>
-                <Box>
-                    <Typography gutterBottom variant="h7" component="div">MultiAssayExperiment</Typography>
+                <Box sx={{ py: 1, px: 1, display: 'flex' }}>
+                    <Box sx={{ border: '0px solid red' }}>
+                        <img width={27} src={`${BASE_URL}/R.ico`} style={{ opacity: 0.7 }} alt="R" />
+                    </Box>
+                    <Box sx={{ pt: 0.5, pl: 1, border: '0px solid red' }}>
+                        <Typography variant="h7" component="div">MultiAssayExperiment</Typography>
+                    </Box>
                 </Box>
             </Card>
         </Box>

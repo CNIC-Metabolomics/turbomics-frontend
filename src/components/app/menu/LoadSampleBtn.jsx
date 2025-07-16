@@ -49,8 +49,8 @@ export default function LoadSampleBtn() {
     }
 
     return (
-        <Box sx={{ alignSelf: 'center', position: 'absolute', left: '10%', pt: 3 }}>
-            <Box>
+        <Box sx={{position: 'relative', top:32, left:25}}>
+            <Box sx={{ textAlign: 'center' }}>
                 <Button
                     variant='outlined'
                     startIcon={<CloudDownloadIcon />}
@@ -66,11 +66,11 @@ export default function LoadSampleBtn() {
             </Box>
             <Box sx={{
                 display: 'flex',
-                justifyContent: 'space-evenly',
+                justifyContent: 'center',
                 textAlign: 'center', mt: 1,
             }}
             >
-                <Box>
+                <Box sx={{ mx: 2 }}>
                     <Link
                         href={`${SERVER_URL}/turbomicshelp`}
                         target='_self'
@@ -78,7 +78,7 @@ export default function LoadSampleBtn() {
                         Help
                     </Link>
                 </Box>
-                <Box>
+                <Box sx={{ mx: 2 }}>
                     <Link
                         href='https://github.com/CNIC-Proteomics/TurboOmics/blob/main/LICENSE.md'
                         target='_blank'

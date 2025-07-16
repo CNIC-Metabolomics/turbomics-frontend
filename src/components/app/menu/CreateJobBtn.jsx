@@ -15,8 +15,8 @@ export default function CreateJobBtn({ setCreatingJob, setPage, setAnnotating })
     const job = useJob();
     const { DEV_MODE, API_URL } = useVars();
 
-    const allowCreateJob = job.user.mdata!=null && job.omics.length>0 && job.OS != null;
-    
+    const allowCreateJob = job.user.mdata != null && job.omics.length > 0 && job.OS != null;
+
     const handleCreateJob = async () => {
         if (!allowCreateJob) return;
 
@@ -73,7 +73,7 @@ export default function CreateJobBtn({ setCreatingJob, setPage, setAnnotating })
             jobContext: newJob
         });
 
-        dispatchResults({type:'reset-results'});
+        dispatchResults({ type: 'reset-results' });
 
         // Finish loading state
         if (job.omics.includes('m')) {
@@ -87,28 +87,31 @@ export default function CreateJobBtn({ setCreatingJob, setPage, setAnnotating })
     return (
         <Card
             sx={{
-                width: 110,
-                height: 70,
+                width: 180,
+                //height: 70,
                 textAlign: 'center',
                 cursor: !allowCreateJob ? 'not-allowed' : 'pointer',
                 userSelect: 'none',
-                margin: "0px 15px",
-                position: 'absolute', 
-                right: '12%',
+                display:'flex', justifyContent: 'center',
+                //margin: "0px 15px",
+                //position: 'absolute', 
+                //right: '12%',
                 backgroundColor: allowCreateJob ? 'rgba(255, 0, 0, 0.2)' : 'rgba(0,0,0,0.10)',
                 transition: "transform 0.15s ease-in-out, background 0.15s",
-                "&:hover": allowCreateJob && { 
-                    transform: "scale3d(1.05, 1.05, 1)", 
-                    backgroundColor: 'rgba(255, 0, 0, 0.3)' 
+                "&:hover": allowCreateJob && {
+                    transform: "scale3d(1.05, 1.05, 1)",
+                    backgroundColor: 'rgba(255, 0, 0, 0.3)'
                 },
             }}
             onClick={handleCreateJob}
         >
-            <Box sx={{ py: 1 }}>
-                <NoteAddIcon />
-            </Box>
-            <Box>
-                <Typography gutterBottom variant="h7" component="div">Create Job</Typography>
+            <Box sx={{ py:1, px:1, display: 'flex' }}>
+                <Box>
+                    <NoteAddIcon />
+                </Box>
+                <Box sx={{pt:0.3, pl:1}}>
+                    <Typography variant="h7" component="div">Create new job</Typography>
+                </Box>
             </Box>
         </Card>
     )
