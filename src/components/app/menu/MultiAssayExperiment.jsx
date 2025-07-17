@@ -97,18 +97,18 @@ const MultiAssayExperiment = () => {
                 sx={{
                     ...style,
                     display: 'flex', justifyContent: 'center',
-                    width: 230,
+                    width: 180,
                     transition: "transform 0.15s ease-in-out, background 0.15s",
                     '&:hover': { backgroundColor: 'rgba(0,0,0,0.2)', transform: "scale3d(1.02, 1.02, 1)" }
                 }}
                 onClick={() => setOpenDialog(true)}
             >
                 <Box sx={{ py: 1, px: 1, display: 'flex' }}>
-                    <Box sx={{ border: '0px solid red' }}>
+                    <Box >
                         <img width={27} src={`${BASE_URL}/R.ico`} style={{ opacity: 0.7 }} alt="R" />
                     </Box>
-                    <Box sx={{ pt: 0.5, pl: 1, border: '0px solid red' }}>
-                        <Typography variant="h7" component="div">MultiAssayExperiment</Typography>
+                    <Box sx={{ pt: 0.5, pl: 1 }}>
+                        <Typography variant="h7" component="div">Upload from R</Typography>
                     </Box>
                 </Box>
             </Card>

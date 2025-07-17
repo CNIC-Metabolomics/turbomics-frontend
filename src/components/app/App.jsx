@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 
-import { JobProvider } from './JobContext';
+import { JobProvider, useJob } from './JobContext';
 import MyMotion from '../MyMotion'
 import Menu from './menu/Menu';
 
 import NewJob from './newJob/NewJob';
-import FindJob from './findJob/FindJob';
 import { ResultsProvider } from './ResultsContext';
 import AskAnnotationsDialog from './newJob/createJob/AskAnnotationsDialog';
 import CreateJobWaiting from './newJob/createJob/CreateJobWaiting';
@@ -44,7 +43,7 @@ export default function App() {
                     />
 
                     {annotating &&
-                        <Annotating />
+                        <Annotating page={page} />
                     }
 
                     {
@@ -73,16 +72,9 @@ export default function App() {
                     }
 
                     {
-                        page == 'find-job' &&
-                        <MyMotion>
-                            <FindJob setPage={setPage} setAnnotating={setAnnotating} />
-                        </MyMotion>
-                    }
-
-                    {
                         page == 'results' &&
                         <MyMotion>
-                            <Results/>
+                            <Results />
                         </MyMotion>
                     }
                 </ResultsProvider>

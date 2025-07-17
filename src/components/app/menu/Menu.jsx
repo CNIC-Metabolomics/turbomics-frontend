@@ -14,6 +14,7 @@ import { Box, Card, Typography } from '@mui/material';
 import { getStyle } from './getStyle';
 import MultiAssayExperiment from './MultiAssayExperiment';
 import { useVars } from '@/components/VarsContext';
+import FindJob from './FindJob';
 
 export default function Menu({ page, setPage, setCreatingJob, setAnnotating }) {
 
@@ -21,7 +22,7 @@ export default function Menu({ page, setPage, setCreatingJob, setAnnotating }) {
     const { user, OS, omics, jobID } = useJob();
 
     return (
-        <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2, border: '0px solid red' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
             {
                 page == 'new-job' &&
                 <>
@@ -32,20 +33,20 @@ export default function Menu({ page, setPage, setCreatingJob, setAnnotating }) {
                         justifyContent: 'space-evenly',
                         border: '0px solid red', height: 50
                     }}>
-                        <Box sx={{ width: '25%', border: '0px solid blue' }}>
+                        <Box sx={{ width: '25%' }}>
                             <LoadSampleBtn />
                         </Box>
-                        <Box sx={{ width: '15%', border: '0px solid blue' }}>
+                        <Box sx={{ width: '15%' }}>
                             <MultiAssayExperiment />
                         </Box>
-                        <Box sx={{ width: '10%', display: 'flex', justifyContent: 'center', border: '0px solid blue' }}>
+                        <Box sx={{ width: 180, display: 'flex', justifyContent: 'center' }}>
                             <CreateJobBtn
                                 setCreatingJob={setCreatingJob}
                                 setPage={setPage}
                                 setAnnotating={setAnnotating}
                             />
                         </Box>
-                        <Box sx={{ width: '15%', border: '0px solid blue' }}>
+                        <Box sx={{ width: '15%' }}>
                             {jobID != null &&
                                 <MenuOption
                                     text='Back to results'
@@ -58,8 +59,8 @@ export default function Menu({ page, setPage, setCreatingJob, setAnnotating }) {
                                 </MenuOption>
                             }
                         </Box>
-                        <Box sx={{ width: '25%', border: '1px solid blue' }}>
-                            Find Job
+                        <Box sx={{ width: '25%' }}>
+                            <FindJob setPage={setPage} setAnnotating={setAnnotating} />
                         </Box>
                     </Box>
                 </>
@@ -79,34 +80,6 @@ export default function Menu({ page, setPage, setCreatingJob, setAnnotating }) {
                         </MenuOption>
                     </Box>
                 </>
-            }
-            {
-                page == 'new-job' && false && <>
-                    <LoadSampleBtn />
-                    <MultiAssayExperiment />
-                </>}
-            {false &&
-                <>
-                    <MenuOption text='New Job' id='new-job' setPage={setPage} page={page}>
-                        <CreateIcon />
-                    </MenuOption>
-                    <MenuOption text='Find Job' id='find-job' setPage={setPage} page={page}>
-                        <SearchIcon />
-                    </MenuOption>
-                    <MenuOption text='Results' id='results' setPage={setPage} page={page}>
-                        <ScienceIcon />
-                    </MenuOption>
-                </>
-            }
-            {
-                page == 'new-job' && false && // user.mdata && omics.length > 0 && OS != null && // ((user.xm && user.m2i) && (user.xq && user.q2i)) && 
-                <MyMotion>
-                    <CreateJobBtn
-                        setCreatingJob={setCreatingJob}
-                        setPage={setPage}
-                        setAnnotating={setAnnotating}
-                    />
-                </MyMotion>
             }
         </Box>
     );

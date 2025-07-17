@@ -1,4 +1,4 @@
-import { Box, Card, Typography, styled } from '@mui/material';
+import { Box, Card, Tooltip, Typography, styled } from '@mui/material';
 import React from 'react'
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import { getStyle } from './getStyle';
@@ -7,6 +7,7 @@ import { json2Danfo, danfo2Json } from '@/utils/jobDanfoJsonConverter';
 import { useDispatchJob, useJob } from '../JobContext';
 import { useVars } from '@/components/VarsContext';
 import { useDispatchResults } from '../ResultsContext';
+import MyMotion from '@/components/MyMotion';
 
 export default function CreateJobBtn({ setCreatingJob, setPage, setAnnotating }) {
 
@@ -85,34 +86,50 @@ export default function CreateJobBtn({ setCreatingJob, setPage, setAnnotating })
     }
 
     return (
-        <Card
-            sx={{
-                width: 180,
-                //height: 70,
-                textAlign: 'center',
-                cursor: !allowCreateJob ? 'not-allowed' : 'pointer',
-                userSelect: 'none',
-                display:'flex', justifyContent: 'center',
-                //margin: "0px 15px",
-                //position: 'absolute', 
-                //right: '12%',
-                backgroundColor: allowCreateJob ? 'rgba(255, 0, 0, 0.2)' : 'rgba(0,0,0,0.10)',
-                transition: "transform 0.15s ease-in-out, background 0.15s",
-                "&:hover": allowCreateJob && {
-                    transform: "scale3d(1.05, 1.05, 1)",
-                    backgroundColor: 'rgba(255, 0, 0, 0.3)'
-                },
-            }}
-            onClick={handleCreateJob}
-        >
-            <Box sx={{ py:1, px:1, display: 'flex' }}>
-                <Box>
-                    <NoteAddIcon />
-                </Box>
-                <Box sx={{pt:0.3, pl:1}}>
-                    <Typography variant="h7" component="div">Create new job</Typography>
-                </Box>
-            </Box>
-        </Card>
+        <>
+            {true &&
+                <MyMotion>
+                    <Tooltip
+                        title={!allowCreateJob ?
+                            <Typography fontSize={15}>
+                                Upload the Experimental Metadata and at least one Quantification file to enable analysis
+                            </Typography> : ''
+                        }
+                        sx={{ fontSize: '2em' }}
+                        arrow
+                    >
+                        <Card
+                            sx={{
+                                width: 180,
+                                //height: 70,
+                                textAlign: 'center',
+                                cursor: !allowCreateJob ? 'not-allowed' : 'pointer',
+                                userSelect: 'none',
+                                display: 'flex', justifyContent: 'center',
+                                //margin: "0px 15px",
+                                //position: 'absolute', 
+                                //right: '12%',
+                                backgroundColor: allowCreateJob ? 'rgba(255, 0, 0, 0.2)' : 'rgba(0,0,0,0.10)',
+                                transition: "transform 0.15s ease-in-out, background 0.15s",
+                                "&:hover": allowCreateJob && {
+                                    transform: "scale3d(1.05, 1.05, 1)",
+                                    backgroundColor: 'rgba(255, 0, 0, 0.3)'
+                                },
+                            }}
+                            onClick={handleCreateJob}
+                        >
+                            <Box sx={{ py: 1, px: 1, display: 'flex' }}>
+                                <Box>
+                                    <NoteAddIcon />
+                                </Box>
+                                <Box sx={{ pt: 0.3, pl: 1 }}>
+                                    <Typography variant="h7" component="div">Create new job</Typography>
+                                </Box>
+                            </Box>
+                        </Card>
+                    </Tooltip>
+                </MyMotion>
+            }
+        </>
     )
 }

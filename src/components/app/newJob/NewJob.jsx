@@ -65,7 +65,7 @@ export default function NewJob() {
                     title="Proteomic Quantifications"
                     fileType="xq"
                     traspose={true}
-                    DialogHelp={<HelpOmicQuant title='Transcriptomic Quantitative Table' tableFile='Q_Quant.png' />}
+                    DialogHelp={<HelpOmicQuant title='Proteomic Quantitative Table' tableFile='Q_Quant.png' />}
                 />
             </Box>
 

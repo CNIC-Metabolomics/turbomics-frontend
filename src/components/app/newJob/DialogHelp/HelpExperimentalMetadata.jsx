@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { Box, Typography } from "@mui/material";
+import { Box, Tooltip, Typography } from "@mui/material";
 import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -31,9 +31,11 @@ export default function HelpExperimentalMetadata() {
 
     return (
         <Box>
-            <IconButton sx={{p:0, pb:1}} onClick={openDialog}>
-                <InfoOutlinedIcon />
-            </IconButton>
+            <Tooltip title="Click for more information" arrow>
+                <IconButton sx={{ p: 0, pb: 1 }} onClick={openDialog}>
+                    <InfoOutlinedIcon />
+                </IconButton>
+            </Tooltip>
             <BootstrapDialog
                 onClose={closeDialog}
                 aria-labelledby="customized-dialog-title"
@@ -55,18 +57,18 @@ export default function HelpExperimentalMetadata() {
                 >
                     <CloseIcon />
                 </IconButton>
-                <DialogContent sx={{textAlign: 'justify'}} dividers>
+                <DialogContent sx={{ textAlign: 'justify' }} dividers>
                     <Typography gutterBottom>
                         The Experimental Metadata Table contains information about each sample in your study.
-                        <strong> Each row in the table represents a unique sample</strong>. 
-                        This could be a biological replicate 
+                        <strong> Each row in the table represents a unique sample</strong>.
+                        This could be a biological replicate
                         or any other unit of observation relevant to your experiment.
                         The first column of the table must contain the <strong>identifier for each sample</strong>.
-                        Any additional column can be added to this table containing information of 
+                        Any additional column can be added to this table containing information of
                         the <strong>experimental conditions or treatments</strong>.
                     </Typography>
 
-                    <div style={{textAlign: 'center', padding:3}}>
+                    <div style={{ textAlign: 'center', padding: 3 }}>
                         <img src={`${BASE_URL}/ExperimentalMetadataTable.png`} alt="ExperimentalMetadataTable" />
                     </div>
                 </DialogContent>

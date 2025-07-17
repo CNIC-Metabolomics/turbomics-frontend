@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { Box, Typography } from "@mui/material";
+import { Box, Tooltip, Typography } from "@mui/material";
 import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -8,6 +8,7 @@ import DialogContent from '@mui/material/DialogContent';
 import IconButton from '@mui/material/IconButton';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+
 
 import CloseIcon from '@mui/icons-material/Close';
 import { useVars } from '../../../VarsContext';
@@ -32,9 +33,11 @@ export default function HelpOmicMetadata({ title, tableFile }) {
 
     return (
         <Box>
-            <IconButton sx={{p:0, pb:1}} onClick={openDialog}>
-                <InfoOutlinedIcon />
-            </IconButton>
+            <Tooltip title="Click for more information" arrow>
+                <IconButton sx={{ p: 0, pb: 1 }} onClick={openDialog}>
+                    <InfoOutlinedIcon />
+                </IconButton>
+            </Tooltip>
             <BootstrapDialog
                 onClose={closeDialog}
                 aria-labelledby="customized-dialog-title"
@@ -77,7 +80,7 @@ export default function HelpOmicMetadata({ title, tableFile }) {
                         perform putative annotations, helping to identify the metabolites in your data.
                     </Typography>
 
-                    <div style={{textAlign: 'center', padding:3}}>
+                    <div style={{ textAlign: 'center', padding: 3 }}>
                         <img src={`${BASE_URL}/${tableFile}`} alt="OmicMetadataTable" />
                     </div>
                 </DialogContent>

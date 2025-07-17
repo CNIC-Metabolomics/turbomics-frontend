@@ -30,7 +30,7 @@ export default function FindJob({ setPage, setAnnotating }) {
         const resJson = await res.json();
 
         if (resJson.exist) {
-            console.log(resJson)
+            console.log(resJson);
             setAnnotating(false);
 
             dispatchJob({
@@ -41,17 +41,18 @@ export default function FindJob({ setPage, setAnnotating }) {
             dispatchResults({ type: 'reset-results' });
 
             if (resJson.jobContext.annParams != null) {
-                setAnnotating(true);
+                // Provide time to render disappearance
+                setTimeout(() => setAnnotating(true), 1000); 
             }
             setPage('results');
 
         } else {
-            setExist(false)
+            setExist(false);
         }
         setLoading(prev => false);
     }
 
-    console.log(loading)
+    console.log(loading);
 
     const SearchButton = () => (
         <IconButton onClick={() => handleSearch(searchedJobID)}>
@@ -60,7 +61,7 @@ export default function FindJob({ setPage, setAnnotating }) {
     )
 
     return (
-        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+        <Box sx={{ position: 'relative', top: 13, left: 0 }}>
             <Backdrop
                 sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
                 open={loading}
@@ -74,29 +75,30 @@ export default function FindJob({ setPage, setAnnotating }) {
                     </Box>
                 </Box>
             </Backdrop>
-            <Box sx={{ marginTop: '15%', width: '70%', border: '0px solid red' }}>
-                <Box sx={{ textAlign: 'end' }}>
-                    <Link
-                        component="button"
-                        underline='hover'
-                        sx={{fontSize:'1.1rem'}}
-                        onClick={() => {setSearchedJobID(EXAMPLE_JOB); handleSearch(EXAMPLE_JOB)}}
-                    >
-                        Load example
-                    </Link>
-                </Box>
+            <Box sx={{ width: '60%', margin: 'auto' }}>
                 <TextField
                     id="outlined-basic"
                     label="Search Job"
                     variant="outlined"
+                    size='small'
                     onChange={e => { setSearchedJobID(e.target.value); setExist(true); }}
                     value={searchedJobID}
                     InputProps={{ endAdornment: <SearchButton /> }}
-                    sx={{ width: "100%", border: '0px solid red' }}
-                    autoFocus
+                    sx={{ width: "100%" }}
+                    //autoFocus
                     error={!exist}
                     helperText={!exist && 'Job not found'}
                 />
+                <Box sx={{ textAlign: 'end' }}>
+                    <Link
+                        component="button"
+                        underline='hover'
+                        sx={{ fontSize: '1rem' }}
+                        onClick={() => { setSearchedJobID(EXAMPLE_JOB); handleSearch(EXAMPLE_JOB) }}
+                    >
+                        Load example
+                    </Link>
+                </Box>
             </Box>
         </Box>
     )

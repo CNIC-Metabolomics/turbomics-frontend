@@ -9,7 +9,7 @@ const TIME_SLEEP = 6000; //in milliseconds
 //const CMM_URI = "http://ceumass.eps.uspceu.es/mediator/api/v3/batch";
 //const MY_FECTH = "https://truboomics.alwaysdata.net/get_cmm"
 
-function Annotating() {
+function Annotating({ page }) {
 
     const { SERVER_URL, API_URL, FETCH_CMM_URL } = useVars();
 
@@ -218,7 +218,7 @@ function Annotating() {
                 top: 40,
                 height: 0,
                 width: '100%',
-
+                display: page=='results' ? 'block': 'none',
             }}
         >
             <Box sx={{

@@ -96,7 +96,10 @@ export default function Results() {
 
     return (
         <>
-            <Typography variant='body2' sx={{ textAlign: 'right', pr: 4 }}>
+            <Typography
+                variant='body2'
+                sx={{ textAlign: 'right', pr: 4, position:'relative', top:25 }}
+            >
                 Job ID: {jobID}
             </Typography>
             <Box

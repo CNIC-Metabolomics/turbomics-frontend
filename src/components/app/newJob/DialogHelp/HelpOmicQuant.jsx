@@ -8,6 +8,7 @@ import DialogContent from '@mui/material/DialogContent';
 import IconButton from '@mui/material/IconButton';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import Tooltip from '@mui/material/Tooltip';
 
 import CloseIcon from '@mui/icons-material/Close';
 import { useVars } from '../../../VarsContext';
@@ -32,9 +33,11 @@ export default function HelpOmicQuant({ title, tableFile }) {
 
     return (
         <Box>
-            <IconButton sx={{p:0, pb:1}} onClick={openDialog}>
-                <InfoOutlinedIcon />
-            </IconButton>
+            <Tooltip title="Click for more information" arrow>
+                <IconButton sx={{ p: 0, pb: 1 }} onClick={openDialog}>
+                    <InfoOutlinedIcon />
+                </IconButton>
+            </Tooltip>
             <BootstrapDialog
                 onClose={closeDialog}
                 aria-labelledby="customized-dialog-title"
@@ -74,7 +77,7 @@ export default function HelpOmicQuant({ title, tableFile }) {
                         in the metadata tables.
                     </Typography>
 
-                    <div style={{textAlign: 'center', padding:3}}>
+                    <div style={{ textAlign: 'center', padding: 3 }}>
                         <img src={`${BASE_URL}/${tableFile}`} alt="OmicMetadataTable" />
                     </div>
                 </DialogContent>
