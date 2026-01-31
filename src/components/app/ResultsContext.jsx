@@ -2,7 +2,7 @@
 Libraries
 */
 
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext } from 'react';
 import { useImmerReducer } from 'use-immer';
 
 
@@ -36,8 +36,6 @@ export function ResultsProvider({ children }) {
 }
 
 function resultsReducer(draft, action) {
-    console.log(`Results object updated: ${action.type}`);
-    console.log(action);
 
     switch (action.type) {
 
@@ -366,7 +364,7 @@ const resultsTemplate = {
         }
     },
     'PWA': {
-        view: 'Single-View',
+        view: 'Multi-View',
         mdataCol: null,
         mdataCategorical: {
             isCategorical: false,

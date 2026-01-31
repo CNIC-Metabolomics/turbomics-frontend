@@ -59,10 +59,26 @@ export default function HelpSectionBottom() {
                 <DialogContent sx={{ textAlign: 'justify' }} dividers>
                     <Typography gutterBottom>
                         The structure of the lower pane varies based on whether you are
-                        using Single-View or Multi-View analysis:
+                        using Multi-View or Single-View analysis:
                     </Typography>
                     <Box sx={{ pl: 4 }}>
                         <List sx={{ listStyleType: 'disc', listStyle: 'outside' }}>
+                            <ListItem sx={{ display: 'list-item', textAlign: 'justify' }}>
+                                <strong>Multi-View</strong>:
+                                <List sx={{ listStyleType: 'disc', listStyle: 'outside' }}>
+                                    <ListItem sx={{ display: 'list-item', textAlign: 'justify' }}>
+                                        <strong>Omic-Specific Pathway Tables</strong>:
+                                        Separate tables are provided for each analyzed omic, listing the most relevant 
+                                        pathways for each (VIP {'>'} 1). This allows you to see how pathways across 
+                                        different omics contribute to the overall model.
+                                    </ListItem>
+                                    <ListItem sx={{ display: 'list-item', textAlign: 'justify' }}>
+                                        <strong>Pathway Exploration</strong>: Similar to Single-View, you can click on pathways 
+                                        to explore the associated biomolecules, with their degree of 
+                                        association indicated by their loadings.
+                                    </ListItem>
+                                </List>
+                            </ListItem>
                             <ListItem sx={{ display: 'list-item', textAlign: 'justify' }}>
                                 <strong>Single-View</strong>:
                                 <List sx={{ listStyleType: 'disc', listStyle: 'outside' }}>
@@ -79,22 +95,6 @@ export default function HelpSectionBottom() {
                                         is indicated by the loading on the first principal component,
                                         which provides insight into the contribution of each biomolecule (the 
                                         loading sign should not be interpreted as a biological increase or decrease).
-                                    </ListItem>
-                                </List>
-                            </ListItem>
-                            <ListItem sx={{ display: 'list-item', textAlign: 'justify' }}>
-                                <strong>Multi-View</strong>:
-                                <List sx={{ listStyleType: 'disc', listStyle: 'outside' }}>
-                                    <ListItem sx={{ display: 'list-item', textAlign: 'justify' }}>
-                                        <strong>Omic-Specific Pathway Tables</strong>:
-                                        Separate tables are provided for each analyzed omic, listing the most relevant 
-                                        pathways for each (VIP {'>'} 1). This allows you to see how pathways across 
-                                        different omics contribute to the overall model.
-                                    </ListItem>
-                                    <ListItem sx={{ display: 'list-item', textAlign: 'justify' }}>
-                                        <strong>Pathway Exploration</strong>: Similar to Single-View, you can click on pathways 
-                                        to explore the associated biomolecules, with their degree of 
-                                        association indicated by their loadings.
                                     </ListItem>
                                 </List>
                             </ListItem>

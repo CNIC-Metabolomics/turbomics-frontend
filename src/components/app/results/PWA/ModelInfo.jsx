@@ -52,7 +52,7 @@ function ModelInfo({ runId, model_info, view, workingOmics }) {
     // Percentage per each omic in Multi-View case
     const mvColumns = useMemo(() => {
         let mv = [];
-        if (view == 'Multi-View') {
+        if (view == 'Single-View') {
             mv = workingOmics.map(e => ({
                 header: `${OMIC2NAME[e]} (%)`,
                 id: e,

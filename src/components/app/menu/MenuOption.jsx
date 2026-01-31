@@ -2,12 +2,9 @@ import { Box, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
 import { styled } from '@mui/material';
 
-//import { getStyle } from './getStyle';
 import { useJob } from '../JobContext';
 
 const getStyle = (backgroundColor, resultsDisable = false) => ({
-    //width: 110,
-    //height: 40,
     textAlign: 'center',
     display:'flex', justifyContent: 'center',
     backgroundColor: backgroundColor,

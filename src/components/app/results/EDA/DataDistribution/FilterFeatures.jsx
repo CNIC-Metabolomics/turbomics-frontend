@@ -23,7 +23,6 @@ export default function FilterFeatures({ omic, setFilteredID, updatePlot }) {
     const [fx2i] = useFx2i(omic);
 
     const { filteredFeatures, columns } = useMemo(() => {
-        console.log('calculating filteredFeatures');
 
         let filteredFeatures = [];
         let columns = [{
@@ -79,12 +78,10 @@ export default function FilterFeatures({ omic, setFilteredID, updatePlot }) {
     }, [filterText, filterCol, fx2i]);
 
     useEffect(() => {
-        console.log('useEffect: Recalculating features');
 
         const myTimeout = setTimeout(() => {
             setFilteredID(filteredFeatures.map(feature => feature[' ']));
             updatePlot([omic]);
-            console.log('Features recalculated');
         }, 1000);
 
         return () => clearTimeout(myTimeout);

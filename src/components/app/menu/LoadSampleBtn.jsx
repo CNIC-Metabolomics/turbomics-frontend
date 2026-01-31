@@ -1,91 +1,182 @@
 import { useVars } from '@/components/VarsContext'
-import { Box, Button, Link } from '@mui/material'
-import React from 'react'
+import React, { useState } from 'react'
+import { Box, Link, IconButton, Tooltip } from '@mui/material'
+import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline'
 import { useDispatchJob } from '../JobContext'
-import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
-
+import MultiAssayExperiment from '../newJob/MultiAssayExperiment'
+import { tsvToDanfo } from "../../../utils/tsvToDanfo.js";
+import LoadingOverlay from '../LoadingOverlay'
 
 export default function LoadSampleBtn() {
 
-    const { API_URL, SERVER_URL } = useVars();
+    const { API_URL } = useVars();
     const dispatchJob = useDispatchJob();
 
-    const handleClick = async e => {
-        console.log(`Loading sample data`);
+    const [loading, setLoading] = useState(false);
+    const [logMsg, setLogMsg] = useState('');
 
-        // Fetch data from server
-        const res = await fetch(`${API_URL}/load_sample_data`);
-        const resJson = await res.json();
+    /**
+     * Load sample data
+     */
+    const handleLoadSample = async (e, sample) => {
+        e.preventDefault()
+        console.log(`Loading sample data: ${sample}`)
 
-        // Update Job state
-        Object.keys(resJson).forEach(key => {
-            dispatchJob({ // save danfo df
+        setLoading(true)
+        setLogMsg(`Requesting sample ${sample} data...`)
+
+        try {
+            // get the files to load the sample data
+            const res = await fetch(
+                `${API_URL}/load_sample_data?sample=${sample}`
+            )
+            if (!res.ok) {
+                throw new Error('Failed to load sample data')
+            }
+            const resJson = await res.json()
+
+            // clean all inputs
+            setLogMsg('Cleaning existing inputs...')
+            dispatchJob({ type: 'delete-all-files' })
+
+        //     // load the files
+        //     setLogMsg('Loading files into the app...')
+        //     Object.keys(resJson).forEach(key => {
+        //         let item = resJson[key];
+        //         let fileName = item[0];
+        //         let keyData = item[1];
+        //         dispatchJob({
+        //             type: 'user-upload',
+        //             fileType: key,
+        //             userFileName: `${fileName}.tsv`,
+        //             dfJson: keyData,
+        //             idCol: Object.keys(keyData[0])[0]
+        //         })
+        //     })
+
+        // load the files
+        setLogMsg('Loading files into the app...');
+        for (const key of Object.keys(resJson)) {
+            const item = resJson[key];
+            const name = item.name;
+            const data = item.data;
+            const transpose = item.transpose;
+            // convert the TSV to Json and transpose if apply
+            const [dfJson, idCol] = await tsvToDanfo(data, '\t', transpose);
+            // dispache the job
+            dispatchJob({
                 type: 'user-upload',
                 fileType: key,
-                userFileName: `${key}.tsv`,
-                dfJson: resJson[key],
-                idCol: Object.keys(resJson[key][0])[0]
+                userFileName: name,
+                dfJson: dfJson,
+                idCol: idCol
             });
-        })
+        }
+
+            setLogMsg('Sample data loaded successfully.')
+        } catch (err) {
+            console.error('Error loading sample data:', err)
+            setLogMsg('Error loading sample data.')
+        } finally {
+            setLoading(false)
+        }
     }
 
-    const handleDownload = () => {
-        fetch(`${API_URL}/download_sample_data`)
-            .then((res) => {
-                return res.blob();
-            })
-            .then((blob) => {
-                const href = window.URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.href = href;
-                link.setAttribute('download', 'TurboOmics-SampleData.zip');
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            })
-            .catch((err) => {
-                return Promise.reject({ Error: 'Something Went Wrong', err });
-            })
+    /**
+     * Download sample data
+     */
+    const handleDownloadSample = async (sample, fileName) => {
+        console.log(`Downloading sample data: ${sample}`)
+
+        try {
+            const res = await fetch(
+                `${API_URL}/download_sample_data?sample=${sample}`
+            )
+
+            if (!res.ok) {
+                throw new Error('Failed to download sample data')
+            }
+
+            const blob = await res.blob()
+            const href = window.URL.createObjectURL(blob)
+
+            const link = document.createElement('a')
+            link.href = href
+            link.setAttribute('download', fileName)
+
+            document.body.appendChild(link)
+            link.click()
+            document.body.removeChild(link)
+
+            window.URL.revokeObjectURL(href)
+
+        } catch (err) {
+            console.error('Error downloading sample data:', err)
+        }
     }
 
     return (
-        <Box sx={{position: 'relative', top:32, left:25}}>
-            <Box sx={{ textAlign: 'center' }}>
-                <Button
-                    variant='outlined'
-                    startIcon={<CloudDownloadIcon />}
-                    onClick={handleClick}
+        <Box sx={{ position: 'relative', top: 60 }}>
+
+        {/* Loading overlay */}
+        <LoadingOverlay
+            open={loading}
+            logMessage={logMsg}
+        />
+
+            {/* Untarget Data (sample = 1) */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                <Tooltip title="Download the Untarget Metabolomic sample data">
+                    <IconButton
+                        onClick={() =>
+                            handleDownloadSample(1, 'SampleData_Untarget.zip')
+                        }
+                        size="small"
+                        color="primary"
+                        disabled={loading}
+                    >
+                        <DownloadForOfflineIcon />
+                    </IconButton>
+                </Tooltip>
+
+                <Link
+                    href="#"
+                    onClick={(e) => handleLoadSample(e, 1)}
+                    underline="hover"
+                    sx={{ pointerEvents: loading ? 'none' : 'auto' }}
                 >
-                    Load Sample Data
-                </Button>
-            </Box>
-            <Box sx={{ textAlign: 'center', mt: 1 }}>
-                <Link href='#' onClick={handleDownload}>
-                    Download sample data
+                    Load the Untarget Metabolomic sample data
                 </Link>
             </Box>
-            <Box sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                textAlign: 'center', mt: 1,
-            }}
-            >
-                <Box sx={{ mx: 2 }}>
-                    <Link
-                        href={`${SERVER_URL}/turbomicshelp`}
-                        target='_self'
+
+            {/* Target Data (sample = 2) */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                <Tooltip title="Download the Target Metabolomic sample data">
+                    <IconButton
+                        onClick={() =>
+                            handleDownloadSample(2, 'SampleData_Target.zip')
+                        }
+                        size="small"
+                        color="primary"
+                        disabled={loading}
                     >
-                        Help
-                    </Link>
-                </Box>
-                <Box sx={{ mx: 2 }}>
-                    <Link
-                        href='https://github.com/CNIC-Proteomics/TurboOmics/blob/main/LICENSE.md'
-                        target='_blank'
-                    >
-                        License
-                    </Link>
-                </Box>
+                        <DownloadForOfflineIcon />
+                    </IconButton>
+                </Tooltip>
+
+                <Link
+                    href="#"
+                    onClick={(e) => handleLoadSample(e, 2)}
+                    underline="hover"
+                    sx={{ pointerEvents: loading ? 'none' : 'auto' }}
+                >
+                    Load the Target Metabolomic sample data
+                </Link>
+            </Box>
+
+            {/* Upload Data from R */}
+            <Box sx={{ display: 'flex', alignItems: 'right', gap: 1 }}>
+                <MultiAssayExperiment />
             </Box>
         </Box>
     )

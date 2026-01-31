@@ -29,8 +29,6 @@ export function JobProvider({ children }) {
 
 
 function jobReducer(draft, action) {
-    console.log(`jobReducer called: ${action.type}`);
-    console.log(action);
 
     switch (action.type) {
         case 'set-os': {
@@ -179,6 +177,21 @@ function jobReducer(draft, action) {
             break;
         }
 
+        case 'delete-all-files': {
+            Object.keys(draft.user).forEach(fileType => {
+                draft.user[fileType] = null
+                draft.userFileNames[fileType] = null
+                draft.index[fileType] = null
+            })
+
+            draft.omics = []
+            draft.results.PRE.MV = { xq: null, xm: null, xt: null }
+            draft.results.PRE.norm = { xq: 'None', xm: 'None', xt: 'None' }
+            draft.x_f2i = { m2i: false, q2i: false, t2i: false }
+            break
+        }
+
+
         case 'set-norm': {
             if (
                 ['log2', 'log2+median'].includes(action.normType) &&
@@ -213,6 +226,11 @@ function jobReducer(draft, action) {
 
         case 'set-ann-params': {
             draft.annParams = action.annParams;
+            break;
+        }
+
+        case 'run-put-annots': {
+            draft.putAnnots = action.putAnnots;
             break;
         }
 
@@ -294,7 +312,8 @@ const jobTemplate = {
             }
         },
     },
-    annParams: null // Annotations params for putative annotations
+    annParams: null, // Annotations params for putative annotations
+    putAnnots: false // Flag to start the putative annotations (CMM_TP)
 }
 
 const sortOmics = (sOmics) => {

@@ -5,17 +5,19 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-import { useVars } from './VarsContext';
+import { useVars } from '../VarsContext';
+import FindJob from './menu/FindJob';
+
 
 import Image from 'next/image';
 
-export default function MyNavBar() {
+export default function MyNavBar({ setPage, setAnnotating }) {
 
     const { BASE_URL, SERVER_URL } = useVars();
 
     return (
         <Navbar bg="dark" data-bs-theme="dark" className="bg-body-tertiary" style={{ fontSize: "1.2em" }}>
-            <Container className='mx-0'>
+            <Container fluid>
                 <Navbar.Brand href="#home">
                     <Image
                         src={`${BASE_URL}/icon.ico`}
@@ -27,6 +29,7 @@ export default function MyNavBar() {
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
+                    {/* LEFT NAVMENU */}
                     <Nav className="me-auto">
                         <Nav.Link href="home" className='mx-2'>Home</Nav.Link>
                         <Nav.Link href="webserver" className='mx-2'>TurboPutative</Nav.Link>
@@ -41,11 +44,12 @@ export default function MyNavBar() {
                         </NavDropdown>
                         <Nav.Link href="contactUs" className='mx-2'>Contact us</Nav.Link>
                     </Nav>
+                    {/* RIGHT NAVMENU */}
+                    <Nav className="ms-auto align-items-center">
+                        <FindJob setPage={setPage} setAnnotating={setAnnotating} />
+                    </Nav>
                 </Navbar.Collapse>
             </Container>
-            <Navbar.Collapse className="justify-content-end" >
-                <Navbar.Brand href="" style={{ fontSize: "1.2em", userSelect: 'none' }}>TurbOmics</Navbar.Brand>
-            </Navbar.Collapse>
         </Navbar>
     );
 }

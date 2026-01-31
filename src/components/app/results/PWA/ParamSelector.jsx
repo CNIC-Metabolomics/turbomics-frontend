@@ -30,7 +30,7 @@ const omicIdTypeOpts = {
 }
 
 
-function ParamSelector({ setRId2info, fetchJobRun, setLoading }) {
+function ParamSelector({ setRId2info, fetchJobRun, setLoading, disabled }) {
 
     // Get job data
     const { omics, mdataType, OS, f2x } = useJob();
@@ -48,7 +48,6 @@ function ParamSelector({ setRId2info, fetchJobRun, setLoading }) {
                 setMetaboID(data);
                 dispatchResults({ type: 'set-pwa-attr', attr: 'MetaboID', value: data });
                 setLoading(false);
-                console.log('MetaboID loaded');
             });
         } else {
             setLoading(false);
@@ -98,8 +97,6 @@ function ParamSelector({ setRId2info, fetchJobRun, setLoading }) {
     );
 
     const handleOmicIdChange = async (o, omicIdCol_i, omicIdType_i) => {
-        console.log(o, omicIdCol_i, omicIdType_i);
-
         if (!omicIdCol_i) {
             setOmicIdR(prev => ({ ...prev, [o]: null }));
             setRId2info(prev => ({ ...prev, [o]: {} }));
@@ -145,7 +142,6 @@ function ParamSelector({ setRId2info, fetchJobRun, setLoading }) {
 
             const fetchGProfiler = (URI, uId) => {
                 return new Promise( async (resolve, reject) => {
-                    console.log('Trying ', URI);
                     try {
                         const res = await fetch(
                             URI,
@@ -258,7 +254,9 @@ function ParamSelector({ setRId2info, fetchJobRun, setLoading }) {
                         variant='outlined'
                         color='primary'
                         endIcon={<SendIcon />}
-                        disabled={!(
+                        disabled={
+                        disabled ||
+                        !(
                             mdataCol && (!mdataCategorical.isCategorical || (mdataCategorical.g1 && mdataCategorical.g2)) &&
                             (Object.values(omicIdCol).some(e => e)) &&
                             omics.every(omic => (!(omicIdCol[omic] && omicIdType[omic]) || omicIdR[omic]))
@@ -288,6 +286,7 @@ function ParamSelector({ setRId2info, fetchJobRun, setLoading }) {
 
                 <Box sx={{ display: 'flex' }}>
                     <Autocomplete
+                        disabled={disabled}
                         value={mdataCol}
                         onChange={handleMdataAutocomplete}
                         isOptionEqualToValue={(option, value) => option.id === value.id}
@@ -315,6 +314,7 @@ function ParamSelector({ setRId2info, fetchJobRun, setLoading }) {
                 }}>
                     <Box>
                         <Autocomplete
+                            disabled={disabled}
                             value={mdataCategorical.g1}
                             onChange={(e, newValue) => setMdataCategorical(prev => ({ ...prev, g1: newValue }))}
                             isOptionEqualToValue={(option, value) => option.id === value.id}
@@ -331,9 +331,16 @@ function ParamSelector({ setRId2info, fetchJobRun, setLoading }) {
                             }}
                         />
                     </Box>
-                    <Box sx={{ px: 2 }}><Typography>vs</Typography></Box>
+                    {/* <Box sx={{ px: 2 }}><Typography>vs</Typography></Box> */}
+                    <Box sx={{ px: 2 }}>
+                        <Typography sx={{ color: disabled ? 'text.disabled' : 'text.primary' }}>
+                            vs
+                        </Typography>
+                    </Box>
+
                     <Box>
                         <Autocomplete
+                            disabled={disabled}
                             value={mdataCategorical.g2}
                             onChange={(e, newValue) => setMdataCategorical(prev => ({ ...prev, g2: newValue }))}
                             isOptionEqualToValue={(option, value) => option.id === value.id}
@@ -371,6 +378,7 @@ function ParamSelector({ setRId2info, fetchJobRun, setLoading }) {
                         omicIdType_i={omicIdType[o]}
                         setOmicIdType_i={(e) => setOmicIdType(prev => ({ ...prev, [o]: e }))}
                         handleOmicIdChange={handleOmicIdChange}
+                        disabled={disabled}
                     />
                 ))}
             </Box>
@@ -383,7 +391,8 @@ const OmicIdSelector = ({
     o,
     omicIdCol_i, setOmicIdCol_i,
     omicIdType_i, setOmicIdType_i,
-    handleOmicIdChange
+    handleOmicIdChange,
+    disabled
 }) => {
 
     const { OMIC2NAME } = useVars();
@@ -393,6 +402,7 @@ const OmicIdSelector = ({
         <Box key={o} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <Box>
                 <Autocomplete
+                    disabled={disabled}
                     value={omicIdCol_i}
                     onChange={
                         (event, newValue) => {
@@ -419,6 +429,7 @@ const OmicIdSelector = ({
                 <FormControl variant="standard" fullWidth>
                     <InputLabel shrink id="demo-simple-select-label"></InputLabel>
                     <Select
+                        disabled={disabled}
                         sx={{ minWidth: '180px' }}
                         labelId="demo-controlled-open-select-label"
                         id="demo-controlled-open-select"

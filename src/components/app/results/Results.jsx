@@ -12,6 +12,9 @@ import ErrorOutlineOutlinedIcon from '@mui/icons-material/ErrorOutlineOutlined';
 
 import dynamic from 'next/dynamic'
 
+const CMMTP = dynamic(
+    () => import('./CMMTP/CMMTP')
+);
 const PCA = dynamic(
     () => import('./EDA/PCA/PCA')
 );
@@ -24,10 +27,6 @@ const GSEA = dynamic(
 const PWA = dynamic(
     () => import('./PWA/PWA')
 );
-// import PCA from './EDA/PCA/PCA';
-// import MOFA from './MOFA/MOFA';
-// import GSEA from './GSEA/GSEA';
-// import PWA from './PWA/PWA';
 
 export default function Results() {
 
@@ -43,9 +42,9 @@ export default function Results() {
     const savedValue = useResults().value; // TabValue
     const [value, setValue] = useState(savedValue);
 
-    const section = Math.floor(value);
+    const { jobID, omics, putAnnots } = useJob();
 
-    const { jobID, omics } = useJob();
+    const [ pwaJob, setPwaJob ] = useState(null); // contains the ID/Status of Pathway Integrative Analysis Job
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -60,7 +59,6 @@ export default function Results() {
         if (
             Object.keys(status).some(e => status[e].status != resJson[e].status)
         ) {
-            console.log(`Set status: ${resJson}`);
             setStatus(resJson);
             dispatchResults({ type: 'set-status', status: resJson });
         }
@@ -75,11 +73,9 @@ export default function Results() {
 
     // Initialize fetchStatus
     useEffect(() => {
-        console.log(`useEffect: Check status`);
         if (
             Object.keys(savedStatus).some(e => savedStatus[e].status == 'waiting')
         ) {
-            console.log(`useEffect: Initialize status fetching`);
             fetchRef.current = setInterval(fetchStatus, 2500);
             return () => clearInterval(fetchRef.current);
         }
@@ -90,82 +86,87 @@ export default function Results() {
     useEffect(() => {
         import('@/utils/MetaboID.json').then(data => {
             dispatchResults({ type: 'set-pwa-attr', attr: 'MetaboID', value: data });
-            console.log('MetaboID loaded');
         });
     }, [dispatchResults]);
 
+    // Add Putative annotations or not
+    useEffect(() => {
+        if (putAnnots) {
+            setValue(0.0); // switch to CMMTP tab
+            dispatchResults({ type: 'set-tab-value', value: 0.0 });
+        }
+    }, [putAnnots, dispatchResults]);
+
+
     return (
-        <>
-            <Typography
-                variant='body2'
-                sx={{ textAlign: 'right', pr: 4, position:'relative', top:25 }}
-            >
-                Job ID: {jobID}
-            </Typography>
-            <Box
-                sx={{ display: 'flex', flexGrow: 1, bgcolor: 'background.paper' }}
-            >
-                <Box sx={{ width: '15%', borderRight: 1, borderColor: 'divider' }}>
-                    <Tabs
-                        orientation="vertical"
-                        variant="scrollable"
-                        value={value}
-                        onChange={handleChange}
-                        aria-label="Results Sections Tabs"
-                        sx={{ width: '15%', position: 'fixed' }}
-                    >
+        <Box
+            sx={{ display: 'flex', flexGrow: 1, bgcolor: 'background.paper' }}
+        >
+            <Box sx={{ width: '15%', borderRight: 1, borderColor: 'divider' }}>
+                <Tabs
+                    orientation="vertical"
+                    variant="scrollable"
+                    value={value}
+                    onChange={handleChange}
+                    aria-label="Results Sections Tabs"
+                    sx={{ width: '15%', position: 'fixed' }}
+                >
+                    {putAnnots &&
                         <Tab
-                            label={<TabComponent text='EXPLORATORY DATA ANALYSIS' status='' />}
-                            value={0.1}
-                            sx={{ mt: 2, p: 0, color: section == 0 ? '#1976d2' : '#00000099' }}
-                        />
-
-                        <Tab
-                            label={<TabComponent text='DATA DISTRIBUTION' status='' />}
-                            value={0.1}
-                            sx={{ fontSize: 12, m: 0, p: 0, borderTop: '1px solid #cccccc' }}
-                        />
-
-                        <Tab
-                            label={<TabComponent text='PCA' status={status.EDA_PCA.status} />}
-                            value={0.2}
-                            sx={{ fontSize: 12, m: 0, p: 0, borderBottom: '1px solid #cccccc' }}
-                            disabled={status.EDA_PCA.status != 'ok'}
-                        />
-
-                        <Tab
-                            label={<TabComponent text='MULTIOMICS FACTOR ANALYSIS' status={status.MOFA.status} />}
-                            value={1.1}
+                            // label={<TabComponent text='PUTATIVE ANNOTATION' status={status.CMMTP.status} />}
+                            label={<TabComponent text='PUTATIVE ANNOTATION' />}
+                            value={0.0}
                             sx={{ fontSize: 12, mt: 2, p: 0 }}
-                            disabled={status.MOFA.status != 'ok'}
+                            // disabled={status.CMMTP.status != 'ok'}
                         />
+                    }
 
-                        <Tab
-                            label={<TabComponent text='PATHWAY INTEGRATIVE ANALYSIS' status='' />}
-                            value={2.1}
-                            sx={{ fontSize: 12, m: 0, p: 0 }}
-                            disabled={false}
-                        />
+                    <Tab
+                        label={<TabComponent text='DATA DISTRIBUTION' status='' />}
+                        value={0.1}
+                        sx={{ fontSize: 12, m: 0, p: 0 }}
+                    />
 
-                        <Tab
-                            label={<TabComponent text='ENRICHMENT ANALYSIS' status='' />}
-                            value={3.1}
-                            sx={{ fontSize: 12, m: 0, p: 0 }}
-                            disabled={false}
-                        />
+                    <Tab
+                        label={<TabComponent text='PCA' status={status.EDA_PCA.status} />}
+                        value={0.2}
+                        sx={{ fontSize: 12, m: 0, p: 0 }}
+                        disabled={status.EDA_PCA.status != 'ok'}
+                    />
 
-                    </Tabs>
-                </Box>
+                    <Tab
+                        label={<TabComponent text='MULTIOMICS FACTOR ANALYSIS' status={status.MOFA.status} />}
+                        value={1.1}
+                        sx={{ fontSize: 12, mt: 0, p: 0 }}
+                        disabled={status.MOFA.status != 'ok'}
+                    />
 
-                <Box sx={{ width: '85%', borderTop: '1px solid #cccccc' }}>
-                    {value == 0.1 && <Box sx={{ p: 1 }}><DataDistribution /></Box>}
-                    {value == 0.2 && <Box sx={{ p: 1 }}><PCA /></Box>}
-                    {value == 1.1 && <Box sx={{ p: 1 }}><MOFA /></Box>}
-                    {value == 2.1 && <Box sx={{ p: 1 }}><PWA /></Box>}
-                    {value == 3.1 && <Box sx={{ p: 1 }}><GSEA /></Box>}
-                </Box>
+                    <Tab
+                        label={<TabComponent text='PATHWAY INTEGRATIVE ANALYSIS' status={pwaJob?.status} />}
+                        value={2.1}
+                        sx={{ fontSize: 12, m: 0, p: 0 }}
+                        disabled={false}
+                    />
+
+                    <Tab
+                        label={<TabComponent text='ENRICHMENT ANALYSIS' status='' />}
+                        value={3.1}
+                        sx={{ fontSize: 12, m: 0, p: 0 }}
+                        disabled={false}
+                    />
+
+                </Tabs>
             </Box>
-        </>
+
+            <Box sx={{ width: '85%', borderTop: '1px solid #cccccc' }}>
+                {value == 0.0 && putAnnots && <Box sx={{ p: 1 }}><CMMTP /></Box>}
+                {value == 0.1 && <Box sx={{ p: 1 }}><DataDistribution /></Box>}
+                {value == 0.2 && <Box sx={{ p: 1 }}><PCA /></Box>}
+                {value == 1.1 && <Box sx={{ p: 1 }}><MOFA /></Box>}
+                {value == 2.1 && <Box sx={{ p: 1 }}><PWA pwaJob={pwaJob} setPwaJob={setPwaJob} /></Box>}
+                {value == 3.1 && <Box sx={{ p: 1 }}><GSEA /></Box>}
+            </Box>
+        </Box>
     );
 }
 

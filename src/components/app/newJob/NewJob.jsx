@@ -6,8 +6,6 @@ import DragFile from "./DragFile";
 import SummaryTable from './SummaryTable'
 
 import dynamic from 'next/dynamic';
-import { useDispatchJob, useJob } from '../JobContext';
-import MyAutocomplete from './MyAutocomplete';
 import { Divider } from '@mui/material';
 import HelpExperimentalMetadata from './DialogHelp/HelpExperimentalMetadata';
 import HelpOmicMetadata from './DialogHelp/HelpOmicMetadata';
@@ -24,7 +22,7 @@ export default function NewJob() {
         <Box sx={{ width: '100%', p:2 }}>
 
             <Box sx={{ mt: 3, mb: 3, display: 'flex', justifyContent: 'space-between' }}>
-                <Box sx={{ width: '30%' }}><MyAutocomplete /></Box>
+                <Box sx={{ width: '30%' }}></Box>
                 <DragFile title="Experimental Metadata" fileType="mdata" DialogHelp={<HelpExperimentalMetadata />} />
                 <Box sx={{ width: '30%' }}><SummaryTable /></Box>
             </Box>

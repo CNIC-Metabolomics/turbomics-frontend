@@ -1,29 +1,32 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# TurbOmics frontend
 
-## Getting Started
 
-1. Install the dependencies
-```bash
-npm install
-```
 
-2. Start the development server
-```bash
-npm run dev
-```
 
-**Important:** next start only works after you build the project:
-```bash
-npm run build
-npm run start
-```
+---
 
-*npm run dev* => starts development server (hot reload, etc.)
+# License
 
-*npm run build* => builds the app for production
+## Open Source License (MIT)
 
-*npm run start* => runs the production build
+This software is released under the **MIT License**, an OSI-approved open-source license.
 
-3. Open the web application
+Under the MIT License, you are free to:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+* Use the software for any purpose
+* Modify the source code
+* Distribute the software or derivative works
+
+Provided that the original copyright notice and license text are included in all copies or substantial portions of the software.
+
+The full license text is available in the [`LICENSE.md`](LICENSE.md) file.
+
+## Commercial Use & Dual Licensing
+
+While the software is fully open source under the MIT License, the author also offers **separate commercial licensing options**.
+
+These commercial offerings are **optional** and do not restrict the rights granted by the MIT License.
+
+If you are interested in commercial collaboration or services, please contact:
+
+**Contact:** Alessia Ferrarini <alessia.ferrarini@cnic.es>

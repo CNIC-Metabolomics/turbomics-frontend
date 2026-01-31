@@ -1,10 +1,10 @@
 import { Backdrop, Box, CircularProgress, Divider, LinearProgress, Typography } from '@mui/material'
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useEffect, useCallback, useRef, useState } from 'react'
 import ViewSelector from './ViewSelector';
 import { useJob } from '../../JobContext';
 import { useDispatchResults, useResults } from '../../ResultsContext';
 import { useVars } from '../../../VarsContext';
-import SendIcon from '@mui/icons-material/Send';
+// import SendIcon from '@mui/icons-material/Send';
 import ReportProblemIcon from '@mui/icons-material/ReportProblem';
 
 import dynamic from 'next/dynamic'
@@ -14,15 +14,13 @@ import HelpSectionParams from './HelpSection/HelpSectionParams';
 const ParamSelector = dynamic(
     () => import('./ParamSelector')
 );
-//import ParamSelector from './ParamSelector';
 
 const Results = dynamic(
     () => import('./Results')
 );
-//import Results from './Results';
 
 // Main
-function PWA() {
+function PWA({ pwaJob, setPwaJob }) {
 
     // Get results variables
     const dispatchResults = useDispatchResults();
@@ -47,7 +45,7 @@ function PWA() {
 
     // Job status and results
     const getResIntervalRef = useRef();
-    const [jobStatus, setJobStatus] = useState(savedResultsPWA.jobStatus)
+    // const [jobStatus, setJobStatus] = useState(savedResultsPWA.jobStatus)
 
     // Which omics are being used in the analysis
     const [workingOmics, setWorkingOmics] = useState(savedResultsPWA.workingOmics);
@@ -57,23 +55,44 @@ function PWA() {
 
     // Get job results from back-end
     const fetchResults = useCallback(async (runId) => {
-        console.log('Fetching Pathway Analysis results');
         const res = await fetch(`${API_URL}/get_pathway_analysis/${jobID}/${view}/${runId}`);
         const resJson = await res.json();
+        setPwaJob(resJson);
 
         if (resJson.status != 'waiting') {
             console.log('Pathway Analysis finished: ', resJson);
             dispatchResults({type: 'set-pwa-attr', attr:'jobStatus', value:resJson});
-            setJobStatus(resJson);
             clearInterval(getResIntervalRef.current)
         }
 
     }, [getResIntervalRef, view, API_URL, jobID, dispatchResults]);
 
+    // Single polling starter
+    const startPolling = useCallback((runId) => {
+        if (!runId) return;
+
+        clearInterval(getResIntervalRef.current);
+
+        getResIntervalRef.current = setInterval(() => {
+            fetchResults(runId);
+        }, 5000);
+    }, [fetchResults]);
+
+    // Resume polling ONCE on mount
+    useEffect(() => {
+
+        if ((pwaJob?.status === 'waiting' || pwaJob?.status === '') && pwaJob.runId !== null  ) {
+            startPolling(pwaJob.runId);
+        }
+
+        return () => {
+            clearInterval(getResIntervalRef.current);
+        };
+    }, [pwaJob, startPolling]);
+
     // Send job to back-end
     const fetchJobRun = useCallback(async (mdataCol, mdataCategorical, omicIdR, runId) => {
         console.log('Send job to back-end');
-        //const runId = (new Date()).getTime();
         console.log(`runId: ${runId}`);
 
         const res = await fetch(
@@ -97,11 +116,16 @@ function PWA() {
 
         const resJson = await res.json();
         console.log(resJson);
+        
 
         // Start asking for results
-        setJobStatus({ status: 'waiting', pwa_res: null, runId: resJson.runId });
-        clearInterval(getResIntervalRef.current); // clear what was saved
-        getResIntervalRef.current = setInterval(() => fetchResults(resJson.runId), 5000);
+        setPwaJob({ status: 'waiting', pwa_res: null, runId: resJson.runId });
+        // setJobStatus({ status: 'waiting', pwa_res: null, runId: resJson.runId });
+        // clearInterval(getResIntervalRef.current); // clear what was saved
+        // getResIntervalRef.current = setInterval(() => fetchResults(resJson.runId), 5000);
+
+        // Start polling here
+        startPolling(pwaJob?.runId);
 
         // Set working omics
         const _workingOmics = Object.keys(omicIdR).filter(e => omicIdR[e]);
@@ -115,7 +139,8 @@ function PWA() {
         dispatchResults({type: 'set-pwa-attr', attr: 'rId2info', value: rId2info});
 
 
-    }, [view, setWorkingOmics, setJobStatus, setMdataCategorical, 
+    // }, [view, setWorkingOmics, setJobStatus, setMdataCategorical, 
+    }, [view, setWorkingOmics, setPwaJob, setMdataCategorical, 
         API_URL, OS, fetchResults, jobID, rId2info, dispatchResults]);
 
     return (
@@ -138,23 +163,27 @@ function PWA() {
                 <ViewSelector
                     view={view}
                     setView={setView}
-                    resetJobStatus={() => setJobStatus(prev => ({ ...prev, status: '' }))}
+                    // resetJobStatus={() => setJobStatus(prev => ({ ...prev, status: '' }))}
+                    resetJobStatus={() => setPwaJob(prev => ({ ...prev, status: '' }))}
+                    disabled={pwaJob?.status === 'waiting'}
                 />
             </Box>
             <ParamSelector
                 setRId2info={setRId2info}
                 fetchJobRun={fetchJobRun}
                 setLoading={setLoading}
+                disabled={pwaJob?.status === 'waiting'}
             />
             <Divider sx={{ py: 4, color: 'black' }}> </Divider>
-            {jobStatus.status == 'waiting' &&
+            {/* {jobStatus.status == 'waiting' && */}
+            {pwaJob?.status == 'waiting' &&
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                     <Box sx={{ width: '50%', pt: 10 }}>
-                        <LinearProgress sx={{ height: '2px' }} />
+                        <LinearProgress sx={{ height: 2 }} />
                     </Box>
                 </Box>
             }
-            {jobStatus.status == 'ok' &&
+            {/* {jobStatus.status == 'ok' &&
             <>
                 <Results
                     pwa_res={jobStatus.pwa_res}
@@ -165,13 +194,26 @@ function PWA() {
                     mdataCategorical={mdataCategorical}
                 />
                 </>
+            } */}
+            {pwaJob?.status == 'ok' &&
+            <>
+                <Results
+                    pwa_res={pwaJob.pwa_res}
+                    runId={pwaJob.runId}
+                    rId2info={rId2info}
+                    view={view}
+                    workingOmics={workingOmics}
+                    mdataCategorical={mdataCategorical}
+                />
+                </>
             }
-            {jobStatus.status == 'error' &&
+            {/* {jobStatus.status == 'error' && */}
+            {pwaJob?.status == 'error' &&
                 <Box>
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', pt: 10 }}>
                         <ReportProblemIcon sx={{ fontSize: 25 }} />
                         <Typography variant='h6' sx={{ px: 2 }}>
-                            An error occurred when executing Pathway Analysis.
+                            An error occurred when executing Pathway Analysis: { pwaJob?.message || 'Unexpected internal error occurred.'}
                         </Typography>
                     </Box>
                 </Box>

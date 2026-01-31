@@ -9,7 +9,7 @@ const PROXY = "https://corsproxy.io";
 const CMM_URI = "https://ceumass.eps.uspceu.es/mediator/api/v3/batch";
 
 
-function Annotating({ page }) {
+function CMMTP() {
 
     const { DEV_MODE, SERVER_URL, API_URL, FETCH_CMM_URL } = useVars();
 
@@ -24,7 +24,7 @@ function Annotating({ page }) {
     const m2i_idCol = useJob().idCol.m2i;
     const xm_mid = useJob().norm.xm.columns;
     const m2i_fileName = useJob().userFileNames.m2i;
-    const { annParams } = useJob();
+    const { annParams, putAnnots } = useJob();
     const { m2i } = useJob().user;
     const [fixed_m2i, setFixed_m2i] = useState(m2i);
 
@@ -90,11 +90,13 @@ function Annotating({ page }) {
                 userFileName: m2i_fileName,
                 idCol: m2i_idCol
             });
+            dispatchJob({ type: 'run-put-annots', putAnnots: false }); // stop
         }
 
         if (resJson.status == 'error') {
             setLoadText('Putative Annotation Error');
             setStatus('error');
+            dispatchJob({ type: 'run-put-annots', putAnnots: false }); // stop
             clearInterval(getTPRef.current);
             console.log(resJson);
         }
@@ -155,6 +157,9 @@ function Annotating({ page }) {
 
                 setLoadText('Running CMM Positive Mode');
 
+                console.log(mzBatches);
+                console.log(annParams);
+
                 for (let i = 0; i < mzBatches.pos.length; i++) {
                     //for (let i = 0; i < 1; i++) {
                     setProgress(100 * (i + 1) / mzBatches.pos.length);
@@ -208,17 +213,33 @@ function Annotating({ page }) {
             console.error("CMM failed. Stopping process.", error);
             setStatus("error");
             setLoadText("CMM Error – process stopped");
+            dispatchJob({ type: 'run-put-annots', putAnnots: false }); // stop
             clearInterval(getTPRef.current);
         }
 
     }, [annParams, mzBatches, getTPRef, getTurboPutative, API_URL, fetchCMM, jobID]);
 
+    // useEffect(() => {
+    //     if (status != 'waiting') return;
+    //     console.log('useEffect: Run CMM & TP');
+    //     const cmmTimeOut = setTimeout(requestCMM, 1000);
+    //     return () => clearTimeout(cmmTimeOut);
+    // }, [requestCMM, status]);
+
     useEffect(() => {
-        if (status != 'waiting') return;
-        console.log('useEffect: Run CMM & TP');
-        const cmmTimeOut = setTimeout(requestCMM, 1000);
-        return () => clearTimeout(cmmTimeOut);
-    }, [requestCMM, status]);
+        console.log("PASA");
+        if (!putAnnots) return;
+
+        console.log('CMMTP triggered from Annotate button');
+
+        setStatus('waiting');
+        setProgress(0);
+        setLoadText('Starting CMM...');
+
+        requestCMM();
+
+    }, [putAnnots, requestCMM, dispatchJob]);
+
 
     return (
         <Box
@@ -227,7 +248,7 @@ function Annotating({ page }) {
                 top: 40,
                 height: 0,
                 width: '100%',
-                display: page=='results' ? 'block': 'none',
+                display: 'block',
             }}
         >
             <Box sx={{
@@ -299,4 +320,4 @@ function Annotating({ page }) {
     )
 }
 
-export default Annotating
+export default CMMTP

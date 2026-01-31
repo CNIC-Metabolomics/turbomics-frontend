@@ -2,18 +2,18 @@ import { Box, Typography } from '@mui/material'
 import React, { useState } from 'react'
 import {  useDispatchResults } from '../../ResultsContext'
 
-const ViewSelector = ({ view, setView, resetJobStatus }) => {
+const ViewSelector = ({ view, setView, disabled, resetJobStatus }) => {
     return (
         <Box sx={{display:'flex', justifyContent:'center'}}>
             <Box sx={{ display: 'flex', width: 350 }}>
-                <ViewButton title='Single-View' view={view} setView={setView} resetJobStatus={resetJobStatus} />
-                <ViewButton title='Multi-View' view={view} setView={setView} resetJobStatus={resetJobStatus} />
+                <ViewButton title='Multi-View' view={view} setView={setView} disabled={disabled} resetJobStatus={resetJobStatus} />
+                <ViewButton title='Single-View' view={view} setView={setView} disabled={disabled} resetJobStatus={resetJobStatus} />
             </Box>
         </Box>
     )
 }
 
-const ViewButton = ({ title, view, setView, resetJobStatus={resetJobStatus} }) => {
+const ViewButton = ({ title, view, setView, disabled=false, resetJobStatus={resetJobStatus} }) => {
 
     const dispatchResults = useDispatchResults();
 
@@ -27,9 +27,14 @@ const ViewButton = ({ title, view, setView, resetJobStatus={resetJobStatus} }) =
     if (selected) {
         bgColor = '#1976D2ff';
         textColor = '#ffffff';
-    } else if (hover) {
+    } else if (hover && !disabled) {
         bgColor = '#00000033';
         textColor = '#000000aa';
+    }
+
+    if (disabled) {
+        bgColor = '#00000010';
+        textColor = '#00000055';
     }
 
     return (
@@ -40,11 +45,14 @@ const ViewButton = ({ title, view, setView, resetJobStatus={resetJobStatus} }) =
                 cursor: 'pointer',
                 transition: 'all 1s ease',
                 backgroundColor: bgColor,
-                color: textColor
+                color: textColor,
+                pointerEvents: disabled ? 'none' : 'auto', // blocks all mouse interaction
+                userSelect: 'none'
             }}
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
             onClick={() => {
+                if (disabled) return; // extra safety
                 resetJobStatus(); 
                 setView(title); 
                 dispatchResults({type:'set-pwa-attr', attr:'view', value: title});

@@ -1,7 +1,11 @@
 {
   "name": "turbomics-frontend",
-  "version": "0.1.1",
   "private": true,
+  "version": "1.1",
+  "description": "Web-based platform for multi-omics analysis of metabolomics data implemented in TurboPutative",
+  "author": "Rafael Barrero Rodriguez",
+  "maintainers": ["Jose Manuel Rodriguez","Rafael Barrero Rodriguez"],
+  "license": "MIT",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -39,7 +43,7 @@
     "react-cookie-consent": "^9.0.0",
     "react-csv": "^2.2.2",
     "react-dom": "^18.2.0",
-    "react-drag-drop-files": "^2.3.10",
+    "react-drag-drop-files": "^2.4.0",
     "react-plotly.js": "^2.6.0",
     "react-select": "^5.7.4",
     "recharts": "^2.8.0",

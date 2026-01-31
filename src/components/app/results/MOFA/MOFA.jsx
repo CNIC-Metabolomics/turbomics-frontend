@@ -99,7 +99,7 @@ function MOFA() {
     Function to refresh heatmap
     */
     const [plotHM, setPlotHM] = useState(false);
-    const plotHeatMap = useCallback(() => { console.log('Refresh'); setPlotHM(e => !e) }, [setPlotHM]);
+    const plotHeatMap = useCallback(() => { setPlotHM(e => !e) }, [setPlotHM]);
 
     /*
     Refresh to plot heatmap at first render

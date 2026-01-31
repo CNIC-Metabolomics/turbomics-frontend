@@ -1,13 +1,12 @@
 import { Autocomplete, Box, TextField } from "@mui/material";
 import { useDispatchJob, useJob } from "../JobContext";
-const { os } = require('@/utils/os');
 
-const { useState, useEffect } = require("react");
+const { os } = require('@/utils/os');
+const { useState } = require("react");
 
 function MyAutocomplete() {
 
     let initOS = useJob().OS;
-    //initOS = initOS == null ? os[52] : initOS;
 
     const [expOS, setExpOS] = useState(initOS);
     const dispatchJob = useDispatchJob();
@@ -16,10 +15,6 @@ function MyAutocomplete() {
         setExpOS(newValue);
         dispatchJob({ type: 'set-os', OS: newValue });
     }
-
-    /*useEffect(() => {
-        dispatchJob({ type: 'set-os', OS: expOS });
-    }, [expOS, dispatchJob]);*/
 
     return (
         <Box sx={{display:'flex', justifyContent:'center', alignItems:'center', height:'100%' }}>
@@ -30,10 +25,7 @@ function MyAutocomplete() {
                     disableListWrap
                     value={expOS}
                     onChange={(e, newValue) => handleInput(e, newValue)}
-                    //PopperComponent={StyledPopper}
-                    //ListboxComponent={ListboxComponent}
                     options={os}
-                    //groupBy={(option) => option[0].toUpperCase()}
                     renderInput={(params) => <TextField {...params} label="Organism" />}
                     renderOption={(props, option) => {
                         return (
@@ -43,8 +35,6 @@ function MyAutocomplete() {
                         );
                     }}
                     isOptionEqualToValue={(option, value) => option.id === value.id}
-                //renderOption={(props, option, state) => [props, option, state.index]}
-                //renderGroup={(params) => params}
                 />
             </Box>
         </Box>

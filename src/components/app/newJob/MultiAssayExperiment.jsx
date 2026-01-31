@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 
 import { useDispatchJob, useJob } from '../JobContext';
 import { Backdrop, Box, Button, Card, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Link, List, ListItem, Typography } from '@mui/material';
-import { getStyle } from './getStyle';
+import { getStyle } from '../menu/getStyle';
 import { useVars } from '@/components/VarsContext';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
@@ -92,7 +92,7 @@ const MultiAssayExperiment = () => {
     }
 
     return (<>
-        <Box sx={{ position: 'relative', left: -40 }}>
+        <Box sx={{ position: 'relative', left: -10 }}>
             <Card
                 sx={{
                     ...style,

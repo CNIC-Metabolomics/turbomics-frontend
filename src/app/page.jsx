@@ -3,7 +3,6 @@
 import { StrictMode } from "react";
 
 import { VarsProvider } from "../components/VarsContext";
-import MyNavBar from "../components/NavBar";
 import App from "../components/app/App";
 
 import MyCookieConsent from "../components/MyCookieConsent";
@@ -20,7 +19,6 @@ export default function Page() {
         <main>
             <StrictMode>
                 <VarsProvider>
-                    <MyNavBar />
                     <App />
                     <MyCookieConsent/>
                 </VarsProvider>

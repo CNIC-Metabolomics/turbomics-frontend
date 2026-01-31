@@ -9,7 +9,6 @@ import { useDispatchJob } from '../JobContext';
 import { json2Danfo } from '@/utils/jobDanfoJsonConverter';
 import { useDispatchResults } from '../ResultsContext';
 
-const EXAMPLE_JOB = 'dtkgbe8mId'
 
 export default function FindJob({ setPage, setAnnotating }) {
 
@@ -45,14 +44,13 @@ export default function FindJob({ setPage, setAnnotating }) {
                 setTimeout(() => setAnnotating(true), 1000); 
             }
             setPage('results');
+            setSearchedJobID(''); // clean jobId (text-box)
 
         } else {
             setExist(false);
         }
         setLoading(prev => false);
     }
-
-    console.log(loading);
 
     const SearchButton = () => (
         <IconButton onClick={() => handleSearch(searchedJobID)}>
@@ -61,45 +59,64 @@ export default function FindJob({ setPage, setAnnotating }) {
     )
 
     return (
-        <Box sx={{ position: 'relative', top: 13, left: 0 }}>
-            <Backdrop
-                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-                open={loading}
-            >
-                <Box>
-                    <Box sx={{ textAlign: 'center' }}>
-                        <CircularProgress color="inherit" />
-                    </Box>
-                    <Box sx={{ mt: 2, textAlign: 'center' }}>
-                        Loading Job...
-                    </Box>
-                </Box>
-            </Backdrop>
-            <Box sx={{ width: '60%', margin: 'auto' }}>
+        <>
+        <Box sx={{ width: 260 }} className="d-flex align-items-center ms-auto">
                 <TextField
                     id="outlined-basic"
-                    label="Search Job"
+                    // label="Search Job"
+                    placeholder="Search Job"
                     variant="outlined"
                     size='small'
                     onChange={e => { setSearchedJobID(e.target.value); setExist(true); }}
+                    onKeyDown={e => { if (e.key === 'Enter') {
+                        e.preventDefault();      // avoid form submit / reload
+                        handleSearch(searchedJobID);
+                        }
+                    }}
                     value={searchedJobID}
-                    InputProps={{ endAdornment: <SearchButton /> }}
-                    sx={{ width: "100%" }}
+                    sx={{
+                        width: '100%',
+                        // Label color
+                        '& .MuiInputLabel-root': {
+                        color: 'black',
+                        },
+                        '& .MuiInputLabel-root.Mui-focused': {
+                        color: 'black',
+                        },
+
+                        // Input root
+                        '& .MuiOutlinedInput-root': {
+                            backgroundColor: 'white',
+
+                            // Text color
+                            '& input': {
+                                color: 'black',
+                            },
+
+                            // Border colors
+                            '& fieldset': {
+                                borderColor: 'rgba(0,0,0,0.4)',
+                            },
+                            '&:hover fieldset': {
+                                borderColor: 'black',
+                            },
+                            '&.Mui-focused fieldset': {
+                                borderColor: 'black',
+                            },
+                        },
+                    }}
+                    InputProps={{
+                        endAdornment: <SearchButton />,
+                        sx: { color: 'white' }
+                    }}
                     //autoFocus
                     error={!exist}
                     helperText={!exist && 'Job not found'}
                 />
-                <Box sx={{ textAlign: 'end' }}>
-                    <Link
-                        component="button"
-                        underline='hover'
-                        sx={{ fontSize: '1rem' }}
-                        onClick={() => { setSearchedJobID(EXAMPLE_JOB); handleSearch(EXAMPLE_JOB) }}
-                    >
-                        Load example
-                    </Link>
-                </Box>
-            </Box>
         </Box>
+        <Backdrop open={loading} sx={{ zIndex: 2000 }}>
+            <CircularProgress color="inherit" />
+        </Backdrop>
+        </>
     )
 }

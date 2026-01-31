@@ -101,14 +101,10 @@ export default function CreateJobBtn({ setCreatingJob, setPage, setAnnotating })
                         <Card
                             sx={{
                                 width: 180,
-                                //height: 70,
                                 textAlign: 'center',
                                 cursor: !allowCreateJob ? 'not-allowed' : 'pointer',
                                 userSelect: 'none',
                                 display: 'flex', justifyContent: 'center',
-                                //margin: "0px 15px",
-                                //position: 'absolute', 
-                                //right: '12%',
                                 backgroundColor: allowCreateJob ? 'rgba(255, 0, 0, 0.2)' : 'rgba(0,0,0,0.10)',
                                 transition: "transform 0.15s ease-in-out, background 0.15s",
                                 "&:hover": allowCreateJob && {
