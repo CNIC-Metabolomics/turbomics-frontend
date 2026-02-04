@@ -4,6 +4,7 @@ Libraries
 
 import { createContext, useContext } from 'react';
 import { useImmerReducer } from 'use-immer';
+import PWA from './results/PWA/PWA';
 
 
 
@@ -58,6 +59,86 @@ function resultsReducer(draft, action) {
         }
 
         /*
+        Putative Annotations: CMM && TP
+        */
+        case 'set-cmm-totals': {
+            draft.CMM.pos = action.pos;
+            draft.CMM.neg = action.neg;
+            draft.CMM.status = 'waiting';
+            break;
+        }
+        case 'init-tp-totals': {
+            draft.TP.status = 'waiting';
+            draft.TP.finished = false;
+            break;
+        }
+
+        case 'update-cmm-progress': {
+            if (action.mode && action.done) { draft.CMM[action.mode].done = action.done }
+            if (action.status) { draft.CMM.status = action.status }
+            break;
+        }
+        case 'update-tp-progress': {
+            if (action.mode) { draft.TP[action.mode].status = action.status }
+            if (action.status) { draft.TP.status = action.status }
+            break;
+        }
+
+        case 'finish-cmm-mode': {
+            draft.CMM[action.mode].finished = true;
+            draft.CMM[action.mode].status = 'ok';
+            break;
+        }
+        case 'finish-cmm': {
+            draft.CMM.status = 'ok';
+            break;
+        }
+        case 'finish-tp-mode': {
+            draft.TP[action.mode].finished = true;
+            draft.TP[action.mode].status = 'ok';
+            break;
+        }
+        case 'finish-tp': {
+            draft.TP.status = 'ok'
+            break;
+        }
+
+        case 'set-cmm-error': {
+            draft.CMM.status = 'error';
+            if (action.mode) {
+                draft.CMM[action.mode].status = 'error';
+                draft.CMM[action.mode].msg = action.msg;
+            }
+            break;
+        }
+        case 'set-tp-error': {
+            draft.TP.status = 'error';
+            if (action.mode) {
+                draft.TP[action.mode].status = 'error';
+                draft.TP[action.mode].msg = action.msg;
+            }
+            break;
+        }
+
+        case 'reset-cmm': {
+            draft.CMM = {
+                status: 'idle', // 'idle' | 'waiting' | 'running' | 'ok' | 'error'
+                pos: { total: 0, done: 0, finished: false, status: 'idle', msg: '' },
+                neg: { total: 0, done: 0, finished: false, status: 'idle', msg: '' },
+            };
+            break;
+        }
+        case 'reset-tp': {
+            draft.TP = {
+                status: 'idle', // 'idle' | 'waiting' | 'running' | 'ok' | 'error'
+                pos: { finished: false, status: 'idle', msg: '' },
+                neg: { finished: false, status: 'idle', msg: '' },
+            };
+            break;
+        }
+
+
+        /*
         EDA - Data Distribution
         */
 
@@ -69,7 +150,7 @@ function resultsReducer(draft, action) {
         case 'set-eda-dd-groupby': {
             draft.EDA.DD.groupby = action.groupby;
             break;
-        };
+        }
 
         case 'set-eda-dd-filter': {
             draft.EDA.DD.filterCol[action.fileType] = action.filterCol;
@@ -304,10 +385,21 @@ const GSEA_PARAMS = {
 }
 
 const resultsTemplate = {
-    'value': 0.1,
+    'value': 0.2,
     'status': {
         EDA_PCA: { status: 'waiting' }, // waiting, ok, error
         MOFA: { status: 'waiting' },
+        // PWA: { status: 'waiting' },
+    },
+    'CMM': {
+        status: 'idle', // 'idle' | 'waiting' | 'running' | 'ok' | 'error'
+        pos: { total: 0, done: 0, finished: false, status: 'idle', msg: '' },
+        neg: { total: 0, done: 0, finished: false, status: 'idle', msg: '' },
+    },
+    'TP': {
+        status: 'idle', // 'idle' | 'waiting' | 'running' | 'ok' | 'error'
+        pos: { finished: false, status: 'idle', msg: '' },
+        neg: { finished: false, status: 'idle', msg: '' },
     },
     'EDA': {
         'DD': { // Data distribution section

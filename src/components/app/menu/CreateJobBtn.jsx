@@ -1,7 +1,6 @@
-import { Box, Card, Tooltip, Typography, styled } from '@mui/material';
+import { Box, Card, Tooltip, Typography } from '@mui/material';
 import React from 'react'
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
-import { getStyle } from './getStyle';
 import generateIdentifier from '@/utils/generateIdentifier';
 import { json2Danfo, danfo2Json } from '@/utils/jobDanfoJsonConverter';
 import { useDispatchJob, useJob } from '../JobContext';
@@ -28,14 +27,9 @@ export default function CreateJobBtn({ setCreatingJob, setPage, setAnnotating })
         setCreatingJob('waiting');
 
         // Get and set jobID
-        //const jobID = DEV_MODE ? '123456' : generateIdentifier(10);
         const jobID = generateIdentifier(10);
 
         console.log(`Creating job: ${jobID}`);
-        /*dispatchJob({
-            type: 'set-job-id',
-            jobID: jobID
-        });*/
 
         // Generate boolean array with size of f2i indicating 
         // features that will be contained in xi_norm
@@ -51,11 +45,6 @@ export default function CreateJobBtn({ setCreatingJob, setPage, setAnnotating })
             });
         });
 
-        /*dispatchJob({
-            type: 'set-f2x',
-            f2x
-        });*/
-
         // Create job in back-end
         const res = await fetch(`${API_URL}/create_job`, {
             method: 'POST',
@@ -67,12 +56,13 @@ export default function CreateJobBtn({ setCreatingJob, setPage, setAnnotating })
 
         // Set jobContext received by back-end
         const resJson = await res.json();
-
         const newJob = json2Danfo(resJson);
         dispatchJob({
             type: 'set-job-context',
             jobContext: newJob
         });
+        // Reset status for putative annotations
+        dispatchJob({ type: 'set-ann-status', status: null });
 
         dispatchResults({ type: 'reset-results' });
 

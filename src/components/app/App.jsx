@@ -11,7 +11,7 @@ import NewJob from './newJob/NewJob';
 import { ResultsProvider } from './ResultsContext';
 import AskAnnotationsDialog from './newJob/createJob/AskAnnotationsDialog';
 import CreateJobWaiting from './newJob/createJob/CreateJobWaiting';
-import Annotating from './newJob/createJob/Annotating';
+// import Annotating from './newJob/createJob/Annotating';
 
 import dynamic from 'next/dynamic'
 const Results = dynamic(

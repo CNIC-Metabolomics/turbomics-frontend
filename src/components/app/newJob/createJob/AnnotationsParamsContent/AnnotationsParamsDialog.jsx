@@ -22,8 +22,6 @@ export default function AnnotationsParamsDialog({
     setAnnotating
 }) {
 
-    //const [loading, setLoading] = useState(false);
-
     return (
         <Dialog
             fullScreen

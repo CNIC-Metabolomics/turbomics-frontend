@@ -229,8 +229,8 @@ function jobReducer(draft, action) {
             break;
         }
 
-        case 'run-put-annots': {
-            draft.putAnnots = action.putAnnots;
+        case 'set-ann-status': {
+            draft.annStatus = action.status;
             break;
         }
 
@@ -313,7 +313,7 @@ const jobTemplate = {
         },
     },
     annParams: null, // Annotations params for putative annotations
-    putAnnots: false // Flag to start the putative annotations (CMM_TP)
+    annStatus: null // Status of putative annotations
 }
 
 const sortOmics = (sOmics) => {

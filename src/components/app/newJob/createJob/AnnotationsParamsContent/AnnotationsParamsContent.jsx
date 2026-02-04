@@ -57,7 +57,7 @@ function AnnotationsParamsContent({ setPage, setCreatingJob, setAnnotating }) {
         });
 
         dispatchJob({ type: 'set-ann-params', annParams: annParams });
-        dispatchJob({ type: 'run-put-annots', putAnnots: true }); // trigger envents
+        dispatchJob({ type: 'set-ann-status', status: 'idle' });
 
         setAnnotating(true);
         setCreatingJob('');

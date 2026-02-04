@@ -42,7 +42,7 @@ export default function Results() {
     const savedValue = useResults().value; // TabValue
     const [value, setValue] = useState(savedValue);
 
-    const { jobID, omics, putAnnots } = useJob();
+    const { jobID, omics, annParams, annStatus } = useJob();
 
     const [ pwaJob, setPwaJob ] = useState(null); // contains the ID/Status of Pathway Integrative Analysis Job
 
@@ -91,11 +91,12 @@ export default function Results() {
 
     // Add Putative annotations or not
     useEffect(() => {
-        if (putAnnots) {
-            setValue(0.0); // switch to CMMTP tab
-            dispatchResults({ type: 'set-tab-value', value: 0.0 });
+        console.log(annStatus);
+        if (annStatus ) {
+            setValue(0.1); // switch to CMMTP tab
+            dispatchResults({ type: 'set-tab-value', value: 0.1 });
         }
-    }, [putAnnots, dispatchResults]);
+    }, [annParams, dispatchResults]);
 
 
     return (
@@ -111,25 +112,23 @@ export default function Results() {
                     aria-label="Results Sections Tabs"
                     sx={{ width: '15%', position: 'fixed' }}
                 >
-                    {putAnnots &&
+                    { annParams &&
                         <Tab
-                            // label={<TabComponent text='PUTATIVE ANNOTATION' status={status.CMMTP.status} />}
-                            label={<TabComponent text='PUTATIVE ANNOTATION' />}
-                            value={0.0}
+                            label={<TabComponent text='PUTATIVE ANNOTATION' status={annStatus} />}
+                            value={0.1}
                             sx={{ fontSize: 12, mt: 2, p: 0 }}
-                            // disabled={status.CMMTP.status != 'ok'}
                         />
                     }
 
                     <Tab
                         label={<TabComponent text='DATA DISTRIBUTION' status='' />}
-                        value={0.1}
+                        value={0.2}
                         sx={{ fontSize: 12, m: 0, p: 0 }}
                     />
 
                     <Tab
                         label={<TabComponent text='PCA' status={status.EDA_PCA.status} />}
-                        value={0.2}
+                        value={0.3}
                         sx={{ fontSize: 12, m: 0, p: 0 }}
                         disabled={status.EDA_PCA.status != 'ok'}
                     />
@@ -159,9 +158,9 @@ export default function Results() {
             </Box>
 
             <Box sx={{ width: '85%', borderTop: '1px solid #cccccc' }}>
-                {value == 0.0 && putAnnots && <Box sx={{ p: 1 }}><CMMTP /></Box>}
-                {value == 0.1 && <Box sx={{ p: 1 }}><DataDistribution /></Box>}
-                {value == 0.2 && <Box sx={{ p: 1 }}><PCA /></Box>}
+                {value == 0.1 && annParams && <Box sx={{ p: 1 }}><CMMTP /></Box>}
+                {value == 0.2 && <Box sx={{ p: 1 }}><DataDistribution /></Box>}
+                {value == 0.3 && <Box sx={{ p: 1 }}><PCA /></Box>}
                 {value == 1.1 && <Box sx={{ p: 1 }}><MOFA /></Box>}
                 {value == 2.1 && <Box sx={{ p: 1 }}><PWA pwaJob={pwaJob} setPwaJob={setPwaJob} /></Box>}
                 {value == 3.1 && <Box sx={{ p: 1 }}><GSEA /></Box>}
