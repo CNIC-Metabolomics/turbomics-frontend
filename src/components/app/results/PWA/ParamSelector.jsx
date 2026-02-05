@@ -1,9 +1,25 @@
-import { Autocomplete, Backdrop, Box, Button, CircularProgress, FormControl, FormHelperText, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material'
+import {
+    Autocomplete,
+    Box,
+    Button,
+    FormControl,
+    FormHelperText,
+    InputLabel,
+    MenuItem,
+    Select,
+    TextField,
+    Typography,
+    Grid,
+    Paper
+} from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useJob } from '../../JobContext';
 import { useDispatchResults, useResults } from '../../ResultsContext';
 import { useVars } from '../../../VarsContext';
 import SendIcon from '@mui/icons-material/Send';
+// import UploadFileIcon from '@mui/icons-material/UploadFile';
+import CustomPathwaysSelector from '../CustomPathwaysSelector';
+
 
 // Constants
 const omicIdTypeOpts = {
@@ -244,147 +260,251 @@ function ParamSelector({ setRId2info, fetchJobRun, setLoading, disabled }) {
         setRId2info(prev => ({ ...prev, [o]: _rId2info }));
     }
 
+  const [selectedPathways, setSelectedPathways] = useState([]);
+
+
     return (
-        <Box sx={{ display: 'flex', justifyContent: 'space-evenly', mt: 4 }}>
+        <>
+            {/* MAIN LAYOUT */}
+            <Grid
+                container
+                spacing={4}
+                sx={{
+                    mt: 4,
+                    px: 4,
+                }}
+            >
 
-            <Box sx={{ width: '25%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                {/* LEFT COLUMN — METADATA */}
+                <Grid item xs={12} md={3}>
+                    <Paper
+                        elevation={2}
+                        sx={{
+                            p: 3,
+                            height: '100%',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            gap: 3
+                        }}
+                    >
 
-                <Box sx={{ textAlign: 'center', mt: 7, position: 'absolute', top: 145 }}>
-                    <Button
-                        variant='outlined'
-                        color='primary'
-                        endIcon={<SendIcon />}
-                        disabled={
+                        <Typography variant="h6">
+                            1. Select the Metadata
+                        </Typography>
+
+                        <Autocomplete
+                            disabled={disabled}
+                            value={mdataCol}
+                            onChange={handleMdataAutocomplete}
+                            isOptionEqualToValue={(option, value) => option.id === value.id}
+                            options={
+                                mdata.columns
+                                    .filter(e => mdataType[e].type === 'categorical')
+                                    .map(e => ({ label: e, id: e }))
+                            }
+                            sx={{ width: '100%' }}
+                            renderInput={(params) =>
+                                <TextField {...params} label="Metadata Column" />
+                            }
+                        />
+
+                        {/* GROUP SELECTORS */}
+                        {mdataCategorical.isCategorical && (
+                            <Box sx={{ display: 'flex', gap: 2 }}>
+                                <Autocomplete
+                                    disabled={disabled}
+                                    value={mdataCategorical.g1}
+                                    onChange={(e, v) =>
+                                        setMdataCategorical(prev => ({ ...prev, g1: v }))
+                                    }
+                                    options={mdataCategorical.colOpts}
+                                    sx={{ width: 120 }}
+                                    renderInput={(p) =>
+                                        <TextField {...p} label="Group 1" />
+                                    }
+                                />
+
+                                <Autocomplete
+                                    disabled={disabled}
+                                    value={mdataCategorical.g2}
+                                    onChange={(e, v) =>
+                                        setMdataCategorical(prev => ({ ...prev, g2: v }))
+                                    }
+                                    options={mdataCategorical.colOpts}
+                                    sx={{ width: 120 }}
+                                    renderInput={(p) =>
+                                        <TextField {...p} label="Group 2" />
+                                    }
+                                />
+                            </Box>
+                        )}
+
+                    </Paper>
+                </Grid>
+
+
+                {/* CENTER COLUMN — OMICS */}
+                <Grid item xs={12} md={6}>
+                    <Paper
+                        elevation={2}
+                        sx={{
+                            p: 3,
+                            height: '100%',
+                        }}
+                    >
+                        <Typography
+                            variant="h6"
+                            textAlign="center"
+                            mb={3}
+                        >
+                            2. Select the Omics Mapping
+                        </Typography>
+
+                        <Grid
+                            container
+                            spacing={4}
+                            justifyContent="center"
+                        >
+                            {omics.map(o => (
+                                <Grid item key={o}>
+                                    <OmicIdSelector
+                                        o={o}
+                                        omicIdCol_i={omicIdCol[o]}
+                                        setOmicIdCol_i={(e) =>
+                                            setOmicIdCol(prev => ({ ...prev, [o]: e }))
+                                        }
+                                        omicIdType_i={omicIdType[o]}
+                                        setOmicIdType_i={(e) =>
+                                            setOmicIdType(prev => ({ ...prev, [o]: e }))
+                                        }
+                                        handleOmicIdChange={handleOmicIdChange}
+                                        disabled={disabled}
+                                    />
+                                </Grid>
+                            ))}
+                        </Grid>
+
+                    </Paper>
+                </Grid>
+
+
+                {/* RIGHT COLUMN — FILE UPLOAD */}
+                <Grid item xs={12} md={3}>
+                    <CustomPathwaysSelector
+                    value={selectedPathways}
+                    onChange={setSelectedPathways}
+                    />
+
+                    {/* <Paper
+                        elevation={2}
+                        sx={{
+                            p: 3,
+                            height: '100%',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            gap: 3
+                        }}
+                    >
+
+                        <Typography variant="h6">
+                            Upload Pathway Data (Optional)
+                        </Typography>
+
+                        <Button
+                            variant="outlined"
+                            component="label"
+                            startIcon={<UploadFileIcon />}
+                            fullWidth
+                        >
+                            Upload File
+                            <input
+                                hidden
+                                type="file"
+                                onChange={handleFileUpload}
+                            />
+                        </Button>
+
+                        {uploadedFile && (
+                            <Typography
+                                variant="body2"
+                                sx={{ wordBreak: 'break-all' }}
+                            >
+                                {uploadedFile.name}
+                            </Typography>
+                        )}
+
+                    </Paper> */}
+                </Grid>
+
+            </Grid>
+
+
+            {/* RUN BUTTON */}
+            <Box
+                sx={{
+                    mt: 3,
+                    display: 'flex',
+                    justifyContent: 'center'
+                }}
+            >
+                <Button
+                    variant="contained"
+                    size="large"
+                    color="primary"
+                    endIcon={<SendIcon />}
+                    sx={{
+                        px: 6,
+                        py: 1.8,
+                        fontSize: '1.1rem',
+                        minWidth: 260,
+                        borderRadius: 3
+                    }}
+                    disabled={
                         disabled ||
                         !(
-                            mdataCol && (!mdataCategorical.isCategorical || (mdataCategorical.g1 && mdataCategorical.g2)) &&
+                            mdataCol &&
+                            (!mdataCategorical.isCategorical ||
+                                (mdataCategorical.g1 && mdataCategorical.g2)) &&
                             (Object.values(omicIdCol).some(e => e)) &&
-                            omics.every(omic => (!(omicIdCol[omic] && omicIdType[omic]) || omicIdR[omic]))
-                        )}
-                        onClick={() => {
-                            dispatchResults({
-                                type: 'set-pwa-params',
+                            omics.every(
+                                omic =>
+                                    (!(omicIdCol[omic] && omicIdType[omic]) ||
+                                        omicIdR[omic])
+                            )
+                        )
+                    }
+                    onClick={() => {
+                        dispatchResults({
+                            type: 'set-pwa-params',
+                            mdataCol,
+                            mdataCategorical,
+                            omicIdCol,
+                            omicIdType,
+                            omicIdR,
+                            OS
+                        });
+                        fetchJobRun(
+                            mdataCol,
+                            mdataCategorical,
+                            omicIdR,
+                            getRunId(
                                 mdataCol,
                                 mdataCategorical,
                                 omicIdCol,
                                 omicIdType,
-                                omicIdR,
-                                OS
-                            })
-                            fetchJobRun(
-                                mdataCol,
-                                mdataCategorical,
-                                omicIdR,
-                                getRunId(mdataCol, mdataCategorical, omicIdCol, omicIdType, OS.id)
+                                OS.id
                             )
-                        }
-                        }
-                    >
-                        Run Analysis
-                    </Button>
-                </Box>
+                        );
+                    }}
+                >
+                    Run Analysis
+                </Button>
 
-                <Box sx={{ display: 'flex' }}>
-                    <Autocomplete
-                        disabled={disabled}
-                        value={mdataCol}
-                        onChange={handleMdataAutocomplete}
-                        isOptionEqualToValue={(option, value) => option.id === value.id}
-                        id="metadata-column"
-                        options={
-                            mdata.columns.filter(
-                                e => mdataType[e].type == 'categorical'
-                            ).map(e => ({ label: e, id: e }))
-                        }
-                        sx={{ width: 300 }}
-                        renderInput={(params) => <TextField {...params} label="Metadata Column" />}
-                        renderOption={(props, option) => {
-                            return (
-                                <li {...props} key={option.label}>
-                                    {option.label}
-                                </li>
-                            );
-                        }}
-                    />
-                </Box>
-                <Box sx={{
-                    display: 'flex', mt: 4, alignItems: 'center',
-                    opacity: mdataCategorical.isCategorical ? 1 : 0,
-                    transition: 'all 0.5s ease'
-                }}>
-                    <Box>
-                        <Autocomplete
-                            disabled={disabled}
-                            value={mdataCategorical.g1}
-                            onChange={(e, newValue) => setMdataCategorical(prev => ({ ...prev, g1: newValue }))}
-                            isOptionEqualToValue={(option, value) => option.id === value.id}
-                            id="metadata-column"
-                            options={mdataCategorical.colOpts}
-                            sx={{ width: 150 }}
-                            renderInput={(params) => <TextField {...params} label="First Group" />}
-                            renderOption={(props, option) => {
-                                return (
-                                    <li {...props} key={option.label}>
-                                        {option.label}
-                                    </li>
-                                );
-                            }}
-                        />
-                    </Box>
-                    {/* <Box sx={{ px: 2 }}><Typography>vs</Typography></Box> */}
-                    <Box sx={{ px: 2 }}>
-                        <Typography sx={{ color: disabled ? 'text.disabled' : 'text.primary' }}>
-                            vs
-                        </Typography>
-                    </Box>
-
-                    <Box>
-                        <Autocomplete
-                            disabled={disabled}
-                            value={mdataCategorical.g2}
-                            onChange={(e, newValue) => setMdataCategorical(prev => ({ ...prev, g2: newValue }))}
-                            isOptionEqualToValue={(option, value) => option.id === value.id}
-                            id="metadata-column"
-                            options={mdataCategorical.colOpts}
-                            sx={{ width: 150 }}
-                            renderInput={(params) => <TextField {...params} label="Second Group" />}
-                            renderOption={(props, option) => {
-                                return (
-                                    <li {...props} key={option.label}>
-                                        {option.label}
-                                    </li>
-                                );
-                            }}
-                        />
-                    </Box>
-                </Box>
             </Box>
-
-            <Box sx={{
-                width: '2%',
-                borderWidth: '0px 1px 0px 0px',
-                borderStyle: 'dashed',
-                borderColor: '#aaaaaa'
-            }}
-            ></Box>
-
-            <Box sx={{ width: '55%', display: 'flex', justifyContent: 'space-evenly' }}>
-                {omics.map(o => (
-                    <OmicIdSelector
-                        key={o}
-                        o={o}
-                        omicIdCol_i={omicIdCol[o]}
-                        setOmicIdCol_i={(e) => setOmicIdCol(prev => ({ ...prev, [o]: e }))}
-                        omicIdType_i={omicIdType[o]}
-                        setOmicIdType_i={(e) => setOmicIdType(prev => ({ ...prev, [o]: e }))}
-                        handleOmicIdChange={handleOmicIdChange}
-                        disabled={disabled}
-                    />
-                ))}
-            </Box>
-
-        </Box>
-    )
+        </>
+    );
 }
 
 const OmicIdSelector = ({

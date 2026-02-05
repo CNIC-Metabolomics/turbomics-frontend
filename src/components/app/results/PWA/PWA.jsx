@@ -174,11 +174,11 @@ function PWA({ pwaJob, setPwaJob }) {
                 setLoading={setLoading}
                 disabled={pwaJob?.status === 'waiting'}
             />
-            <Divider sx={{ py: 4, color: 'black' }}> </Divider>
+            <Divider sx={{ py: 3, color: 'black' }}> </Divider>
             {/* {jobStatus.status == 'waiting' && */}
             {pwaJob?.status == 'waiting' &&
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                    <Box sx={{ width: '50%', pt: 10 }}>
+                    <Box sx={{ width: '50%', pb: 10 }}>
                         <LinearProgress sx={{ height: 2 }} />
                     </Box>
                 </Box>
