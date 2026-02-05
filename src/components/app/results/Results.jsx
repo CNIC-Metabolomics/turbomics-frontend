@@ -91,7 +91,6 @@ export default function Results() {
 
     // Add Putative annotations or not
     useEffect(() => {
-        console.log(annStatus);
         if (annStatus ) {
             setValue(0.1); // switch to CMMTP tab
             dispatchResults({ type: 'set-tab-value', value: 0.1 });

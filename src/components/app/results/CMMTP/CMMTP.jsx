@@ -8,8 +8,7 @@ import {
   Typography,
   Paper,
   Stack,
-  Chip,
-  CircularProgress
+  Chip
 } from '@mui/material';
 import { Grid, Divider, Alert } from '@mui/material';
 
@@ -52,22 +51,6 @@ function CMMTP() {
     const status = annStatus ?? null;
 
     // Component state
-    // const [progress, setProgress] = useState(0);
-    const cmmProgress = useMemo(() => {
-        const posTotal = CMM.pos.total || 0;
-        const negTotal = CMM.neg.total || 0;
-
-        const posDone = CMM.pos.done || 0;
-        const negDone = CMM.neg.done || 0;
-
-        const total = posTotal + negTotal;
-        const done = posDone + negDone;
-
-        if (total === 0) return 0;
-
-        return Math.round((done / total) * 100);
-    }, [CMM]);
-
     const loadText = useMemo(() => {
         if (status === 'waiting') return 'Waiting CMM & TP...';
         if (status === 'running') return 'Running CMM & TP...';
@@ -92,9 +75,6 @@ function CMMTP() {
         if (TP.status === 'error') return 'TurboPutative Error';
         return '';
     }, [TP.status]);
-
-
-
 
     // Batches of mz to be sent to CMM
     const mzBatches = useMemo(() => {
@@ -180,9 +160,7 @@ function CMMTP() {
 
             try {
                 const res = await fetch(
-                    // "https://ceumass.eps.uspceu.es/mediator/api/v3/batch", // Web app
-                    //FETCH_CMM_URL[i%FETCH_CMM_URL.length], // Docker
-                    `${CMM_URL}`, // Web app
+                    `${CMM_URL}`,
                     {
                         method: 'POST',
                         headers: {
@@ -211,13 +189,10 @@ function CMMTP() {
 
         const fullResCMM = { 'pos': [], 'neg': [] };
 
-        dispatchJob({ type: 'set-ann-status', status: 'waiting' });
-
         // POSITIVE
         if (annParams.ionValPos !== null) {
             try {
                 for (let i = 0; i < mzBatches.pos.length; i++) {
-                    // setProgress(100 * (i + 1) / mzBatches.pos.length);
                     const resCMM = await fetchCMM('positive', annParams.posAdd, mzBatches.pos[i], i);
                     fullResCMM.pos = [...fullResCMM.pos, ...resCMM];
                     dispatchResults({
@@ -256,9 +231,9 @@ function CMMTP() {
                 dispatchResults({ type: 'set-cmm-error', mode: 'pos', msg: 'TP failed in the Positive Mode' });
                 clearInterval(getTPRef.current);
             }
-            finally {
-                dispatchResults({ type: 'finish-tp-mode', mode: 'pos' });
-            }
+            // finally {
+            //     dispatchResults({ type: 'finish-tp-mode', mode: 'pos' });
+            // }
         }
 
         // NEGATIVE
@@ -305,9 +280,9 @@ function CMMTP() {
                 dispatchResults({ type: 'set-tp-error', mode: 'neg', msg: 'TP failed in the Negative Mode' });
                 clearInterval(getTPRef.current);
             }
-            finally {
-                dispatchResults({ type: 'finish-tp-mode', mode: 'neg' });
-            }
+            // finally {
+            //     dispatchResults({ type: 'finish-tp-mode', mode: 'neg' });
+            // }
         }
         
         try {
@@ -329,7 +304,7 @@ function CMMTP() {
 
     // Start trigger
     useEffect(() => {
-        if (!annParams) return;          // do nothing if not configured
+        if (!annParams) return;        // do nothing if not configured
         if (status !== 'idle') return; // jump if putative annottions has been already started
         if (hasStartedRef.current) return;
 
@@ -355,7 +330,7 @@ function CMMTP() {
         });
         dispatchResults({ type: 'init-tp-totals' });
 
-        // setProgress(0);
+        // Do the work
         requestCMM();
 
     }, [annParams, status, mzBatches, requestCMM, dispatchJob, dispatchResults]);
@@ -418,36 +393,33 @@ function CMMTP() {
 
                 {/* ===== HEADER ===== */}
                 <Grid container spacing={2}>
+                    <Grid item xs={4} textAlign="center">
+                        <Typography variant="subtitle1" fontWeight={600}>
+                        CMM
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                        {loadCMMText}
+                        </Typography>
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="subtitle1" fontWeight={600}>
-                    CMM
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                    {loadCMMText}
-                    </Typography>
-                </Grid>
+                    <Grid item xs={4} textAlign="center">
+                        <Typography variant="subtitle1" fontWeight={600}>
+                        TurboPutative
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                        {loadTPText}
+                        </Typography>
+                    </Grid>
 
-                <Grid item xs={4}>
-                    <Typography variant="subtitle1" fontWeight={600}>
-                    TurboPutative
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                    {loadTPText}
-                    </Typography>
-                </Grid>
-
-                <Grid item xs={4}>
-                    <Typography variant="subtitle1" fontWeight={600}>
-                    Results
-                    </Typography>
-                </Grid>
-
+                    <Grid item xs={4} textAlign="center">
+                        <Typography variant="subtitle1" fontWeight={600}>
+                        Results
+                        </Typography>
+                    </Grid>
                 </Grid>
 
                 <Divider />
 
-                {/* ===== POS / NEG ROWS ===== */}
                 <Stack spacing={1}>
 
                     {/* POSITIVE */}
@@ -485,7 +457,6 @@ function CMMTP() {
                             </Typography>
                         )}
                         </Grid>
-
                     </Grid>
                     )}
 
