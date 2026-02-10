@@ -2,19 +2,23 @@ import { Autocomplete, Box, TextField } from "@mui/material";
 import { useDispatchJob, useJob } from "../JobContext";
 
 const { os } = require('@/utils/os');
-const { useState } = require("react");
+const { useState, useEffect } = require("react");
 
 function MyAutocomplete() {
 
-    let initOS = useJob().OS;
+    const { OS } = useJob();
 
-    const [expOS, setExpOS] = useState(initOS);
+    const [expOS, setExpOS] = useState(OS);
     const dispatchJob = useDispatchJob();
 
     const handleInput = (e, newValue) => {
         setExpOS(newValue);
         dispatchJob({ type: 'set-os', OS: newValue });
     }
+
+    useEffect(() => {
+        setExpOS(OS);
+    }, [OS]);
 
     return (
         <Box sx={{display:'flex', justifyContent:'center', alignItems:'center', height:'100%' }}>

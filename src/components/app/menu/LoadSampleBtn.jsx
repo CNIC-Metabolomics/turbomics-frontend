@@ -39,39 +39,33 @@ export default function LoadSampleBtn() {
             setLogMsg('Cleaning existing inputs...')
             dispatchJob({ type: 'delete-all-files' })
 
-        //     // load the files
-        //     setLogMsg('Loading files into the app...')
-        //     Object.keys(resJson).forEach(key => {
-        //         let item = resJson[key];
-        //         let fileName = item[0];
-        //         let keyData = item[1];
-        //         dispatchJob({
-        //             type: 'user-upload',
-        //             fileType: key,
-        //             userFileName: `${fileName}.tsv`,
-        //             dfJson: keyData,
-        //             idCol: Object.keys(keyData[0])[0]
-        //         })
-        //     })
+            // Set organism if present
+            if (resJson.organism) {
+                dispatchJob({
+                    type: 'set-os',
+                    OS: resJson.organism
+                });
+            }
 
-        // load the files
-        setLogMsg('Loading files into the app...');
-        for (const key of Object.keys(resJson)) {
-            const item = resJson[key];
-            const name = item.name;
-            const data = item.data;
-            const transpose = item.transpose;
-            // convert the TSV to Json and transpose if apply
-            const [dfJson, idCol] = await tsvToDanfo(data, '\t', transpose);
-            // dispache the job
-            dispatchJob({
-                type: 'user-upload',
-                fileType: key,
-                userFileName: name,
-                dfJson: dfJson,
-                idCol: idCol
-            });
-        }
+            // load the files
+            setLogMsg('Loading files into the app...');
+            for (const key of Object.keys(resJson)) {
+                if (key === "organism") continue; // ignore this key. it is already used for "set-os"
+                const item = resJson[key];
+                const name = item.name;
+                const data = item.data;
+                const transpose = item.transpose;
+                // convert the TSV to Json and transpose if apply
+                const [dfJson, idCol] = await tsvToDanfo(data, '\t', transpose);
+                // dispache the job
+                dispatchJob({
+                    type: 'user-upload',
+                    fileType: key,
+                    userFileName: name,
+                    dfJson: dfJson,
+                    idCol: idCol
+                });
+            }
 
             setLogMsg('Sample data loaded successfully.')
         } catch (err) {
