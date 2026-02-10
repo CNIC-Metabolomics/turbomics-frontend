@@ -1,7 +1,7 @@
 import React, { createContext, useContext } from 'react';
 
 // for Docker use DEV_MODE=true and change Annotating component 
-const DEV_MODE = true; 
+const DEV_MODE = false;
 
 const VarsContext = createContext({
     DEV_MODE: DEV_MODE,
@@ -11,7 +11,7 @@ const VarsContext = createContext({
     API_URL: DEV_MODE ? 'http://localhost:8080/TurboPutative/api/tbomics' :
         'https://proteomics.cnic.es/TurboPutative/api/tbomics',
     FETCH_CMM_URL: DEV_MODE ? 
-    ['http://localhost:8080/TurboPutative/api/tbomics/get_cmm'] ://['http://localhost:8000/get_cmm'] :
+    ['http://localhost:8080/TurboPutative/api/tbomics/get_cmm'] :
         [
             'https://truboomics.alwaysdata.net/get_cmm',//turboputative@gmail.com
             'https://turboomicstercero.alwaysdata.net/get_cmm'//turboomicstercero@gmail.com
