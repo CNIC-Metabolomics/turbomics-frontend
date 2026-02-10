@@ -1,9 +1,20 @@
 # TurbOmics frontend
 
+This repository contains the web front end of TurbOmics.
+
+**TurbOmics** is a user-friendly, web-based application designed for the integrative analysis of multi-omics data, including metabolomics, proteomics, and transcriptomics. The platform addresses key challenges in multi-omics integration, particularly those related to untargeted metabolomics annotation and the reliance on predefined knowledge bases, which often limit flexibility and biological discovery.
+
+TurbOmics provides access to advanced multi-omics integration algorithms through an intuitive interface, making them accessible to researchers from diverse scientific backgrounds.
+
+TurbOmics is especially suited for researchers seeking to integrate metabolomics data with other omics layers while retaining control over annotation strategies and pathway definitions.
+
+TurbOmics was developed by the **Cardiovascular Metabolomics Unit** at **The National Centre for Cardiovascular Research** (CNIC, https://www.cnic.es).
 
 
+# References
 
----
+Barrero-Rodríguez R, Rodriguez JM, Tarifa R, Vázquez J, Mastrangelo A, Ferrarini A. TurboPutative: A web server for data handling and metabolite classification in untargeted metabolomics. Front Mol Biosci. 2022 Sep 8;9:952149. doi: 10.3389/fmolb.2022.952149. PMID: 36158581; PMCID: PMC9493301.
+
 
 # License
 
