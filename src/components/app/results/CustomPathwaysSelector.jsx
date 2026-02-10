@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   Box,
   Button,
@@ -30,7 +30,7 @@ export default function CustomPathwaysSelector({
 
 
   // GET: fetch pathways
-  const fetchPathways = async () => {
+  const fetchPathways = useCallback(async () => {
 
     if (!apiUrl || !jobID) return;
 
@@ -54,12 +54,12 @@ export default function CustomPathwaysSelector({
         } finally {
             setLoading(false);
         }
-    };
+    }, [apiUrl, jobID]);
 
     // Initial load
     useEffect(() => {
         fetchPathways();
-    }, [apiUrl, jobID]);
+    }, [fetchPathways]);
 
 
     // POST: upload file

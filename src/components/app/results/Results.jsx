@@ -95,7 +95,7 @@ export default function Results() {
             setValue(0.1); // switch to CMMTP tab
             dispatchResults({ type: 'set-tab-value', value: 0.1 });
         }
-    }, [annParams, dispatchResults]);
+    }, [annParams, annStatus, dispatchResults]);
 
 
     return (

@@ -47,7 +47,7 @@ function HeatMapContainer({ nFeatRef, fLVec, mdataCol, plotHM, plotHeatMap }) {
             }
         });
         return myFeat
-    }, [omics, nFeatRef, fLVec, plotHM]);
+    }, [omics, nFeatRef, fLVec]);
 
     return (
         <Box sx={{ overflowX: 'auto' }}>

@@ -24,7 +24,7 @@ const CMM_URI = "https://ceumass.eps.uspceu.es/mediator/api/v3/batch";
 
 function CMMTP() {
 
-    const { DEV_MODE, SERVER_URL, API_URL, FETCH_CMM_URL } = useVars();
+    const { DEV_MODE, SERVER_URL, API_URL } = useVars();
 
     const CMM_URL = DEV_MODE ? `${PROXY}/?${encodeURIComponent(CMM_URI)}` : CMM_URI;
 
@@ -142,7 +142,7 @@ function CMMTP() {
             console.log(resJson);
         }
 
-    }, [annParams, jobID, API_URL, m2i_fileName, getTPRef, dispatchJob, m2i_idCol])
+    }, [annParams, jobID, API_URL, m2i_fileName, getTPRef, dispatchJob, dispatchResults, m2i_idCol])
 
     // Fetch putative annotations from CMM
     const fetchCMM = useCallback((ion_mode, adducts, masses, i) => {
@@ -181,7 +181,7 @@ function CMMTP() {
                 resolve([]);
             }
         })
-    }, [annParams, FETCH_CMM_URL])
+    }, [annParams, CMM_URL])
 
     // Loop all mz batches
     const requestCMM = useCallback(async () => {
@@ -300,7 +300,7 @@ function CMMTP() {
             dispatchJob({ type: 'set-ann-status', status: 'ok' });
         }
 
-    }, [annParams, mzBatches, getTPRef, getTurboPutative, API_URL, fetchCMM, jobID]);
+    }, [annParams, mzBatches, getTPRef, getTurboPutative, API_URL, fetchCMM, jobID, dispatchJob, dispatchResults ]);
 
     // Start trigger
     useEffect(() => {
@@ -356,7 +356,7 @@ function CMMTP() {
                         Putative Annotation Not Available
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                        You haven't added Putative Annotation parameters yet.  
+                        {"You haven't added Putative Annotation parameters yet."}  
                         Go back to the annotation step and configure the settings to start CMM & TurboPutative.
                     </Typography>
                 </Paper>

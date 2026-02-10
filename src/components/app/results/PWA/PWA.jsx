@@ -66,7 +66,7 @@ function PWA({ pwaJob, setPwaJob }) {
             clearInterval(getResIntervalRef.current)
         }
 
-    }, [getResIntervalRef, view, API_URL, jobID, dispatchResults]);
+    }, [getResIntervalRef, view, API_URL, jobID, dispatchResults, setPwaJob]);
 
     // Single polling starter
     const startPolling = useCallback((runId) => {
@@ -148,7 +148,7 @@ function PWA({ pwaJob, setPwaJob }) {
         dispatchResults({type: 'set-pwa-attr', attr: 'rId2info', value: rId2info});
 
     }, [view, setWorkingOmics, setPwaJob, setMdataCategorical, 
-        API_URL, OS, fetchResults, jobID, rId2info, dispatchResults]);
+        API_URL, OS, fetchResults, jobID, rId2info, dispatchResults, startPolling, pwaJob]);
 
     return (
         <Box>
