@@ -17,7 +17,6 @@ import { useJob } from '../../JobContext';
 import { useDispatchResults, useResults } from '../../ResultsContext';
 import { useVars } from '../../../VarsContext';
 import SendIcon from '@mui/icons-material/Send';
-// import UploadFileIcon from '@mui/icons-material/UploadFile';
 import CustomPathwaysSelector from '../CustomPathwaysSelector';
 
 
@@ -46,11 +45,13 @@ const omicIdTypeOpts = {
 }
 
 
-function ParamSelector({ setRId2info, fetchJobRun, setLoading, disabled }) {
+function ParamSelector({ setRId2info, fetchJobRun, setLoading, disabled, setHasRun }) {
 
     // Get job data
     const { omics, mdataType, OS, f2x } = useJob();
     const jobUser = useJob().user;
+    const { API_URL } = useVars();
+    const { jobID } = useJob();
 
     // Save section variables
     const dispatchResults = useDispatchResults();
@@ -260,7 +261,8 @@ function ParamSelector({ setRId2info, fetchJobRun, setLoading, disabled }) {
         setRId2info(prev => ({ ...prev, [o]: _rId2info }));
     }
 
-  const [selectedPathways, setSelectedPathways] = useState([]);
+    // Declare the selected custom pathways
+    const [selectedPathways, setSelectedPathways] = useState([]);
 
 
     return (
@@ -392,50 +394,13 @@ function ParamSelector({ setRId2info, fetchJobRun, setLoading, disabled }) {
                 {/* RIGHT COLUMN — FILE UPLOAD */}
                 <Grid item xs={12} md={3}>
                     <CustomPathwaysSelector
-                    value={selectedPathways}
-                    onChange={setSelectedPathways}
+                        value={selectedPathways}
+                        onChange={setSelectedPathways}
+
+                        apiUrl={API_URL}
+                        jobID={jobID}
+                        disabled={disabled}
                     />
-
-                    {/* <Paper
-                        elevation={2}
-                        sx={{
-                            p: 3,
-                            height: '100%',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            gap: 3
-                        }}
-                    >
-
-                        <Typography variant="h6">
-                            Upload Pathway Data (Optional)
-                        </Typography>
-
-                        <Button
-                            variant="outlined"
-                            component="label"
-                            startIcon={<UploadFileIcon />}
-                            fullWidth
-                        >
-                            Upload File
-                            <input
-                                hidden
-                                type="file"
-                                onChange={handleFileUpload}
-                            />
-                        </Button>
-
-                        {uploadedFile && (
-                            <Typography
-                                variant="body2"
-                                sx={{ wordBreak: 'break-all' }}
-                            >
-                                {uploadedFile.name}
-                            </Typography>
-                        )}
-
-                    </Paper> */}
                 </Grid>
 
             </Grid>
@@ -476,6 +441,7 @@ function ParamSelector({ setRId2info, fetchJobRun, setLoading, disabled }) {
                         )
                     }
                     onClick={() => {
+                        setHasRun(true);
                         dispatchResults({
                             type: 'set-pwa-params',
                             mdataCol,
@@ -495,7 +461,8 @@ function ParamSelector({ setRId2info, fetchJobRun, setLoading, disabled }) {
                                 omicIdCol,
                                 omicIdType,
                                 OS.id
-                            )
+                            ),
+                            selectedPathways
                         );
                     }}
                 >

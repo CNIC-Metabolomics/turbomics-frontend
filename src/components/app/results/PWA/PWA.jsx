@@ -4,7 +4,6 @@ import ViewSelector from './ViewSelector';
 import { useJob } from '../../JobContext';
 import { useDispatchResults, useResults } from '../../ResultsContext';
 import { useVars } from '../../../VarsContext';
-// import SendIcon from '@mui/icons-material/Send';
 import ReportProblemIcon from '@mui/icons-material/ReportProblem';
 
 import dynamic from 'next/dynamic'
@@ -36,6 +35,9 @@ function PWA({ pwaJob, setPwaJob }) {
     // Get job variables
     const { omics, jobID, OS } = useJob();
 
+    
+    const [hasRun, setHasRun] = useState(false);
+
 
     // From Reactome identifiers to info
     const [rId2info, setRId2info] = useState(
@@ -45,7 +47,6 @@ function PWA({ pwaJob, setPwaJob }) {
 
     // Job status and results
     const getResIntervalRef = useRef();
-    // const [jobStatus, setJobStatus] = useState(savedResultsPWA.jobStatus)
 
     // Which omics are being used in the analysis
     const [workingOmics, setWorkingOmics] = useState(savedResultsPWA.workingOmics);
@@ -79,21 +80,33 @@ function PWA({ pwaJob, setPwaJob }) {
     }, [fetchResults]);
 
     // Resume polling ONCE on mount
-    useEffect(() => {
+    // useEffect(() => {
 
-        if ((pwaJob?.status === 'waiting' || pwaJob?.status === '') && pwaJob.runId !== null  ) {
+    //     if ((pwaJob?.status === 'waiting' || pwaJob?.status === '') && pwaJob.runId !== null  ) {
+    //         startPolling(pwaJob.runId);
+    //     }
+
+    //     return () => {
+    //         clearInterval(getResIntervalRef.current);
+    //     };
+    // }, [pwaJob, startPolling]);
+    useEffect(() => {
+        if (
+            hasRun &&
+            pwaJob?.status === 'waiting' &&
+            pwaJob?.runId
+        ) {
             startPolling(pwaJob.runId);
         }
 
         return () => {
             clearInterval(getResIntervalRef.current);
         };
-    }, [pwaJob, startPolling]);
+    }, [pwaJob, startPolling, hasRun]);
 
     // Send job to back-end
-    const fetchJobRun = useCallback(async (mdataCol, mdataCategorical, omicIdR, runId) => {
-        console.log('Send job to back-end');
-        console.log(`runId: ${runId}`);
+    const fetchJobRun = useCallback(async (mdataCol, mdataCategorical, omicIdR, runId, selectedPathways = []) => {
+        console.log(`PWA runId: ${runId}`);
 
         const res = await fetch(
             `${API_URL}/run_pathway_analysis/${jobID}/${runId}`,
@@ -109,20 +122,16 @@ function PWA({ pwaJob, setPwaJob }) {
                     val2: mdataCategorical.g2.id,
                     f2id: omicIdR,
                     view: view,
-                    OS: OS.scientific_name.replace(' ', '_')
+                    OS: OS.scientific_name.replace(' ', '_'),
+                    cpwFiles: selectedPathways
                 })
             }
         );
 
         const resJson = await res.json();
-        console.log(resJson);
         
-
         // Start asking for results
         setPwaJob({ status: 'waiting', pwa_res: null, runId: resJson.runId });
-        // setJobStatus({ status: 'waiting', pwa_res: null, runId: resJson.runId });
-        // clearInterval(getResIntervalRef.current); // clear what was saved
-        // getResIntervalRef.current = setInterval(() => fetchResults(resJson.runId), 5000);
 
         // Start polling here
         startPolling(pwaJob?.runId);
@@ -138,8 +147,6 @@ function PWA({ pwaJob, setPwaJob }) {
 
         dispatchResults({type: 'set-pwa-attr', attr: 'rId2info', value: rId2info});
 
-
-    // }, [view, setWorkingOmics, setJobStatus, setMdataCategorical, 
     }, [view, setWorkingOmics, setPwaJob, setMdataCategorical, 
         API_URL, OS, fetchResults, jobID, rId2info, dispatchResults]);
 
@@ -160,18 +167,30 @@ function PWA({ pwaJob, setPwaJob }) {
                 </Box>
             </Backdrop>
             <Box sx={{ pt: 3 }}>
-                <ViewSelector
+                {/* <ViewSelector
                     view={view}
                     setView={setView}
-                    // resetJobStatus={() => setJobStatus(prev => ({ ...prev, status: '' }))}
                     resetJobStatus={() => setPwaJob(prev => ({ ...prev, status: '' }))}
                     disabled={pwaJob?.status === 'waiting'}
+                /> */}
+                <ViewSelector
+                    view={view}
+                    setView={(v) => {
+                        setView(v);
+                        setHasRun(false);
+                    }}
+                    resetJobStatus={() =>
+                        setPwaJob(prev => ({ ...prev, status: '' }))
+                    }
+                    disabled={pwaJob?.status === 'waiting'}
                 />
+
             </Box>
             <ParamSelector
                 setRId2info={setRId2info}
                 fetchJobRun={fetchJobRun}
                 setLoading={setLoading}
+                setHasRun={setHasRun}
                 disabled={pwaJob?.status === 'waiting'}
             />
             <Divider sx={{ py: 3, color: 'black' }}> </Divider>
@@ -183,18 +202,6 @@ function PWA({ pwaJob, setPwaJob }) {
                     </Box>
                 </Box>
             }
-            {/* {jobStatus.status == 'ok' &&
-            <>
-                <Results
-                    pwa_res={jobStatus.pwa_res}
-                    runId={jobStatus.runId}
-                    rId2info={rId2info}
-                    view={view}
-                    workingOmics={workingOmics}
-                    mdataCategorical={mdataCategorical}
-                />
-                </>
-            } */}
             {pwaJob?.status == 'ok' &&
             <>
                 <Results
@@ -205,9 +212,8 @@ function PWA({ pwaJob, setPwaJob }) {
                     workingOmics={workingOmics}
                     mdataCategorical={mdataCategorical}
                 />
-                </>
+            </>
             }
-            {/* {jobStatus.status == 'error' && */}
             {pwaJob?.status == 'error' &&
                 <Box>
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', pt: 10 }}>

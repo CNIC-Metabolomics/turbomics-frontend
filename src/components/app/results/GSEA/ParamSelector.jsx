@@ -6,6 +6,8 @@ import { useVars } from '@/components/VarsContext';
 import { useDispatchResults, useResults } from '../../ResultsContext';
 import { useJob } from '../../JobContext';
 import MyMotion from '@/components/MyMotion';
+import CustomPathwaysSelector from '../CustomPathwaysSelector';
+
 
 /*
 Constants
@@ -303,6 +305,10 @@ function ParamSelector({
         setIonValOpts(_ionValOpts);
         dispatchResults({ type: 'set-ion-val-opts', ionValOpts: _ionValOpts });
     }
+
+    // Declare the selected custom pathways
+    const [selectedPathways, setSelectedPathways] = useState([]);
+
 
     return (
         <Box sx={{ mt: 2 }}>
@@ -651,11 +657,36 @@ function ParamSelector({
                         </Box>
                     </MyMotion>
                 }
+
+                {isM &&
+                    <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5 }}>
+                        <CustomPathwaysSelector
+                            value={selectedPathways}
+                            onChange={setSelectedPathways}
+
+                            apiUrl={API_URL}
+                            jobID={jobID}
+                            // disabled={disabled}
+                        />
+                    </Box>
+                }
+
                 <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5 }}>
                     <Button
-                        variant='outlined'
-                        color='primary'
+                        // variant='outlined'
+                        // color='primary'
+                        // endIcon={<SendIcon />}
+                        variant="contained"
+                        size="large"
+                        color="primary"
                         endIcon={<SendIcon />}
+                        sx={{
+                            px: 6,
+                            py: 1.8,
+                            fontSize: '1.1rem',
+                            minWidth: 260,
+                            borderRadius: 3
+                        }}
                         disabled={!(
                             ready && rankCol && subRankCol &&
                             (!['Mean difference', 't-test'].includes(rankCol.label) || (groups.g1 && groups.g2)) &&
