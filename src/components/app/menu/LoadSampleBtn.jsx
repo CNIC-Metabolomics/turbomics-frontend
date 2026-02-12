@@ -120,7 +120,7 @@ export default function LoadSampleBtn() {
 
             {/* Untarget Data (sample = 1) */}
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                <Tooltip title="Download the Untarget Metabolomic/Lipidomic sample data">
+                <Tooltip title="Download the Untarget Lipidomic sample data">
                     <IconButton
                         onClick={() =>
                             handleDownloadSample(1, 'SampleData_Untarget.zip')
@@ -139,13 +139,13 @@ export default function LoadSampleBtn() {
                     underline="hover"
                     sx={{ pointerEvents: loading ? 'none' : 'auto' }}
                 >
-                    Load the Untarget Metabolomic/Lipidomic sample data
+                    Load the Untarget Lipidomic sample data
                 </Link>
             </Box>
 
             {/* Target Data (sample = 2) */}
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                <Tooltip title="Download the Target Metabolomic/Lipidomic sample data">
+                <Tooltip title="Download the Target Metabolomic sample data">
                     <IconButton
                         onClick={() =>
                             handleDownloadSample(2, 'SampleData_Target.zip')
@@ -164,7 +164,7 @@ export default function LoadSampleBtn() {
                     underline="hover"
                     sx={{ pointerEvents: loading ? 'none' : 'auto' }}
                 >
-                    Load the Target Metabolomic/Lipidomic sample data
+                    Load the Target Metabolomic sample data
                 </Link>
             </Box>
 
