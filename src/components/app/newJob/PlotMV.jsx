@@ -96,7 +96,17 @@ export default function PlotMV({ fileType, omic }) {
                                     <ReferenceLine x={thr} stroke='rgba(100,100,100,1)' />
                                     <Line type="monotone" dataKey="Features" stroke="#8884d8" />
                                     <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-                                    <XAxis id={1} dataKey="MVThr" label={{ value: "Missing Values Threshold", position: 'insideBottom', offset: -10 }} />
+                                    <XAxis
+                                        dataKey="MVThr"
+                                        type="number"
+                                        domain={[0, 1]}
+                                        allowDuplicatedCategory={false}
+                                        label={{
+                                            value: "Missing Values Threshold",
+                                            position: "insideBottom",
+                                            offset: -10
+                                        }}
+                                    />
                                     <YAxis label={{ value: "Accepted Features", position: "insideLeft", angle: -90, dy: 60, offset: -5 }} />
                                     <Tooltip />
                                 </LineChart>
