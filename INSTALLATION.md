@@ -29,9 +29,6 @@ npm run build
 
 2. Copy the builded files into TurbOmics proyect
 
-(copyToTurboPutative.sh)??
-
-
 ```bash
 ./copyToTurbOmicsServer.sh ${FOLDER_OF_FRONTEND}/turbomics-frontend/out ${FOLDER_OF_BACKEND}/TurbOmics/src/TurboOmicsIntegrator/App
 ```
