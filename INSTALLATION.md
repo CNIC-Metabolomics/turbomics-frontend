@@ -27,17 +27,14 @@ Open [http://localhost:3000/TurboPutative](http://localhost:3000/TurboPutative) 
 npm run build
 ```
 
-**Important:** next start only works after you build the project:
-```bash
-npm run build
-npm run start
-```
-
 2. Copy the builded files into TurbOmics proyect
 
 (copyToTurboPutative.sh)??
 
 
 ```bash
-./copyToServerProject.sh 
+./copyToTurbOmicsServer.sh ${FOLDER_OF_FRONTEND}/turbomics-frontend/out ${FOLDER_OF_BACKEND}/TurbOmics/src/TurboOmicsIntegrator/App
 ```
+<!--
+./copyToTurbOmicsServer.sh /home/jmrodriguezc/turbomics-frontend/out /home/jmrodriguezc/TurbOmics/src/TurboOmicsIntegrator/App
+-->
