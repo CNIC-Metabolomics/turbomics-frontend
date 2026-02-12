@@ -68,7 +68,7 @@ function SelectColumns({ annParams, setAnnParams }) {
             </Box>
             <Box sx={{ width: '70%' }}>
                 <Typography variant='h6' sx={{ textAlign: 'center' }}>
-                    Metabolomic Metadata
+                    Metabolomic/Lipidomic Metadata
                 </Typography>
                 <DisplayMetadataTable />
             </Box>

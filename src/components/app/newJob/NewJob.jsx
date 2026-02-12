@@ -36,9 +36,9 @@ export default function NewJob() {
                     DialogHelp={<HelpOmicMetadata title='Transcriptomic Metadata Table' tableFile='T_Metadata.png' />}
                 />
                 <DragFile
-                    title="Metabolomic Metadata"
+                    title="Metabolomic/Lipidomic Metadata"
                     fileType="m2i"
-                    DialogHelp={<HelpOmicMetadata title='Metabolomic Metadata Table' tableFile='M_Metadata.png' />}
+                    DialogHelp={<HelpOmicMetadata title='Metabolomic/Lipidomic Metadata Table' tableFile='M_Metadata.png' />}
                 />
                 <DragFile
                     title="Proteomic Metadata"
@@ -54,10 +54,10 @@ export default function NewJob() {
                     DialogHelp={<HelpOmicQuant title='Transcriptomic Quantitative Table' tableFile='T_Quant.png' />}
                 />
                 <DragFile
-                    title="Metabolomic Quantifications"
+                    title="Metabolomic/Lipidomic Quantifications"
                     fileType="xm"
                     traspose={true}
-                    DialogHelp={<HelpOmicQuant title='Metabolomic Quantitative Table' tableFile='M_Quant.png' />}
+                    DialogHelp={<HelpOmicQuant title='Metabolomic/Lipidomic Quantitative Table' tableFile='M_Quant.png' />}
                 />
                 <DragFile
                     title="Proteomic Quantifications"
