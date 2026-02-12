@@ -22,12 +22,17 @@ Open [http://localhost:3000/TurboPutative](http://localhost:3000/TurboPutative) 
 
 ## Build the application for production
 
-1. Start the development server
+1. Remove the previous build folder
+```bash
+rm -rf out
+```
+
+2. Build the application
 ```bash
 npm run build
 ```
 
-2. Copy the builded files into TurbOmics proyect
+3. Copy the builded files into TurbOmics proyect
 
 ```bash
 ./copyToTurbOmicsServer.sh ${FOLDER_OF_FRONTEND}/turbomics-frontend/out ${FOLDER_OF_BACKEND}/TurbOmics/src/TurboOmicsIntegrator/App
