@@ -671,7 +671,7 @@ function ParamSelector({
                     </Box>
                 }
 
-                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5, mb: 10 }}>
                     <Button
                         // variant='outlined'
                         // color='primary'
