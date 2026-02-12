@@ -10,7 +10,7 @@ import HelpSection from './HelpSection';
 
 import { DownloadHeatmap } from "@/utils/DownloadRechartComponent";
 
-function HeatMapContainer({ nFeatRef, fLVec, mdataCol, plotHM, plotHeatMap }) {
+function HeatMapContainer({ nFeatRef, fLVec, mdataCol, plotHeatMap }) {
 
     const { omics } = useJob();
 
@@ -48,6 +48,21 @@ function HeatMapContainer({ nFeatRef, fLVec, mdataCol, plotHM, plotHeatMap }) {
         });
         return myFeat
     }, [omics, nFeatRef, fLVec]);
+
+    // Check if there are any features to display
+    const hasFeatures = omics.some(
+        omic => myFeat[omic].down.length > 0 || myFeat[omic].up.length > 0
+    );
+
+    if (!hasFeatures) {
+        return (
+            <Box sx={{ textAlign: 'center', mt: 5 }}>
+                <Typography variant="h6" color="text.secondary">
+                    Please select a cell from the "Factor/Condition" table to display the heatmap and feature plots.
+                </Typography>
+            </Box>
+        );
+    }
 
     return (
         <Box sx={{ overflowX: 'auto' }}>
