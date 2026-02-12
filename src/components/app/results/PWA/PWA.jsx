@@ -148,7 +148,7 @@ function PWA({ pwaJob, setPwaJob }) {
         dispatchResults({type: 'set-pwa-attr', attr: 'rId2info', value: rId2info});
 
     }, [view, setWorkingOmics, setPwaJob, setMdataCategorical, 
-        API_URL, OS, fetchResults, jobID, rId2info, dispatchResults, startPolling, pwaJob]);
+        API_URL, OS, jobID, rId2info, dispatchResults, startPolling, pwaJob]);
 
     return (
         <Box>
@@ -219,7 +219,7 @@ function PWA({ pwaJob, setPwaJob }) {
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', pt: 10 }}>
                         <ReportProblemIcon sx={{ fontSize: 25 }} />
                         <Typography variant='h6' sx={{ px: 2 }}>
-                            An error occurred when executing Pathway Analysis: { pwaJob?.message || 'Unexpected internal error occurred.'}
+                            An error occurred when executing Pathway Analysis
                         </Typography>
                     </Box>
                 </Box>
