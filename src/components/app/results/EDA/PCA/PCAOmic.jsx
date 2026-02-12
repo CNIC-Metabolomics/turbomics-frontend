@@ -19,12 +19,12 @@ export default function PCAOmic({ omic }) {
     // Data used for plots
     const dispatchResults = useDispatchResults();
 
-    const savedStatus = useResults().EDA.PCA[omic].status;
-    const [status, setStatus] = useState(savedStatus);
+    // const savedStatus = useResults().EDA.PCA[omic].status;
+    // const [status, setStatus] = useState(savedStatus);
 
-    const savedData = useResults().EDA.PCA[omic].data;
-    const [data, setData] = useState(savedData);
-
+    // const savedData = useResults().EDA.PCA[omic].data;
+    // const [data, setData] = useState(savedData);
+    const { status, data } = useResults().EDA.PCA[omic];
 
     const { projections, loadings, explained_variance, anova } = data;
 
@@ -44,8 +44,8 @@ export default function PCAOmic({ omic }) {
         console.log(resStatus);
         if (resStatus.status != 'waiting') {
             console.log(`Status changed: ${JSON.stringify(resStatus)}`);
-            setData(dataPCA);
-            setStatus(resStatus);
+            // setData(dataPCA);
+            // setStatus(resStatus);
             dispatchResults({ type: 'set-eda-pca-data', data: dataPCA, omic: omic });
             dispatchResults({ type: 'set-eda-pca-status', status: resStatus, omic: omic });
             clearInterval(fetchRef.current);
@@ -53,16 +53,6 @@ export default function PCAOmic({ omic }) {
     },
         [API_URL, jobID, omic, dispatchResults, fetchRef]
     );
-
-    useEffect(() => {
-
-        if (status.status == 'waiting') {
-            console.log('Get data from server');
-            fetchRef.current = setInterval(fetchData, 2000);
-            return () => clearInterval(fetchRef.current)
-        }
-
-    }, [fetchRef, fetchData, status.status]);//, savedStatus, savedData]);
 
     // Get array of arrays with pvalues
 
@@ -80,6 +70,14 @@ export default function PCAOmic({ omic }) {
         () => getSelectedLoadings(loadings, selectedPlot, selectedPlot2D, status, scatterMode),
         [loadings, selectedPlot, selectedPlot2D, status, scatterMode]
     );
+
+    useEffect(() => {
+        if (status?.status == 'waiting') {
+            console.log('Get data from server');
+            fetchRef.current = setInterval(fetchData, 2000);
+            return () => clearInterval(fetchRef.current)
+        }
+    }, [fetchData, status?.status]);
 
     return (
         <Box>
@@ -133,7 +131,7 @@ export default function PCAOmic({ omic }) {
                                         />
                                     }
                                 </Box>
-                                {scatterData &&
+                                {scatterData && pvExpVar &&
                                     <Box sx={{ display: 'flex', 'justifyContent': 'center' }}>
                                         {scatterMode == '1D' ?
                                             <MyScatter
@@ -141,12 +139,14 @@ export default function PCAOmic({ omic }) {
                                                 scatterData={scatterData}
                                                 mdataCol={selectedPlot.mdataCol}
                                                 PCA={selectedPlot.PCA}
+                                                expVar={pvExpVar}
                                             />
                                             :
                                             <MyScatter2D
                                                 omic={omic}
                                                 scatterData={scatterData}
                                                 selectedPlot2D={selectedPlot2D}
+                                                expVar={pvExpVar}
                                             />
                                         }
                                     </Box>

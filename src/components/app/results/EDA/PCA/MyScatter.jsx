@@ -22,7 +22,7 @@ import { useVars } from '@/components/VarsContext';
 
 import { DownloadComponent } from '@/utils/DownloadRechartComponent';
 
-export function MyScatter({ omic, scatterData, mdataCol, PCA }) {
+export function MyScatter({ omic, scatterData, mdataCol, PCA, expVar }) {
 
     const [showLabels, setShowLabels] = useState(false);
 
@@ -73,7 +73,7 @@ export function MyScatter({ omic, scatterData, mdataCol, PCA }) {
                     style={{ fontFamily: 'Calibri' }}
                 >
                     <Label
-                        value={`PCA ${PCA}`}
+                        value={`PCA ${PCA} (${expVar[PCA - 1]}%)`}
                         offset={20}
                         position="insideLeft"
                         angle={-90}
@@ -81,7 +81,11 @@ export function MyScatter({ omic, scatterData, mdataCol, PCA }) {
                     />
                 </YAxis>
                 <Tooltip cursor={{ strokeDasharray: "3 3" }} content={<CustomTooltip />} />
-                <Scatter data={scatterData} fill={myPalette[0]}>
+                <Scatter
+                    data={scatterData}
+                    fill={myPalette[0]}
+                    isAnimationActive={false}
+                >
                     {showLabels &&
                         <LabelList
                             dataKey="element"
@@ -96,7 +100,7 @@ export function MyScatter({ omic, scatterData, mdataCol, PCA }) {
     )
 }
 
-export function MyScatter2D({ omic, scatterData, selectedPlot2D }) {
+export function MyScatter2D({ omic, scatterData, selectedPlot2D, expVar }) {
 
     const { OMIC2NAME } = useVars();
     const scatterRef = useRef();
@@ -128,7 +132,7 @@ export function MyScatter2D({ omic, scatterData, selectedPlot2D }) {
                 //allowDuplicatedCategory={false}
                 >
                     <Label
-                        value={`PCA ${selectedPlot2D.x}`}
+                        value={`PCA ${selectedPlot2D.x} (${expVar[selectedPlot2D.x - 1]}%)`}
                         offset={-10}
                         position="insideBottom"
                         style={{ fontFamily: 'Calibri' }}
@@ -141,7 +145,7 @@ export function MyScatter2D({ omic, scatterData, selectedPlot2D }) {
                     style={{ fontFamily: 'Calibri' }}
                 >
                     <Label
-                        value={`PCA ${selectedPlot2D.y}`}
+                        value={`PCA ${selectedPlot2D.y} (${expVar[selectedPlot2D.y - 1]}%)`}
                         offset={20}
                         position="insideLeft"
                         angle={-90}
@@ -158,6 +162,7 @@ export function MyScatter2D({ omic, scatterData, selectedPlot2D }) {
                                 data={scatterData[level]}
                                 fill={myPalette[i % myPalette.length]}
                                 name={level}
+                                isAnimationActive={false}
                             >
                                 {showLabels &&
                                     <LabelList
