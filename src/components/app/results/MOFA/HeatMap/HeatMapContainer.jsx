@@ -58,7 +58,7 @@ function HeatMapContainer({ nFeatRef, fLVec, mdataCol, plotHeatMap }) {
         return (
             <Box sx={{ textAlign: 'center', mt: 5 }}>
                 <Typography variant="h6" color="text.secondary">
-                    Please select a cell from the "Factor/Condition" table to display the heatmap and feature plots.
+                     {"Please select a cell from the 'Factor/Condition' table to display the heatmap and feature plots."}
                 </Typography>
             </Box>
         );
