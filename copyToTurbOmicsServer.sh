@@ -20,13 +20,33 @@ if [ ! -d "$source_folder" ]; then
     exit 1
 fi
 
-# Create destination folder if it does not exist
-if [ ! -d "$destination_folder" ]; then
-    mkdir -p "$destination_folder" || {
-        echo "Error: Could not create destination folder."
+# If destination exists, rename it with .bak prefix
+if [ -d "$destination_folder" ]; then
+    parent_dir="$(dirname "$destination_folder")"
+    base_name="$(basename "$destination_folder")"
+    backup_folder="$parent_dir/${base_name}.bak"
+
+    # If backup already exists, remove it (optional behavior)
+    if [ -d "$backup_folder" ]; then
+        rm -rf "$backup_folder" || {
+            echo "Error: Could not remove existing backup folder."
+            exit 1
+        }
+    fi
+
+    mv "$destination_folder" "$backup_folder" || {
+        echo "Error: Could not rename existing destination folder."
         exit 1
     }
+
+    echo "Previous destination renamed to $backup_folder"
 fi
+
+# Create destination folder
+mkdir -p "$destination_folder" || {
+    echo "Error: Could not create destination folder."
+    exit 1
+}
 
 # Copy contents
 cp -r "$source_folder"/* "$destination_folder"/ || {
