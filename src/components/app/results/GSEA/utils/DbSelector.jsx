@@ -70,7 +70,7 @@ const SetButton = ({
                 transition: 'ease 1s',
                 zIndex: 10
             }}
-            onMouseEnter={() => { console.log('enter'); setIsHover(true) }}
+            onMouseEnter={() => { setIsHover(true) }}
             onMouseLeave={() => setIsHover(false)}
             onClick={handleClick}
         >

@@ -78,6 +78,9 @@ function GSEAomic({ omic }) {
     // DataBases
     const [db, setDb] = useState(gseaObj.db);
 
+    // Added custom Pathways
+    const [selectedPathways, setSelectedPathways] = useState([]);
+
     // Run GSEA
     const getGseaId = useCallback(() => {
 
@@ -99,10 +102,19 @@ function GSEAomic({ omic }) {
             myGseaID += mParams.ionVal.neg.id ? '_' + mParams.ionVal.neg.id : '';
         }
 
+        if (Array.isArray(selectedPathways) && selectedPathways.length) {
+            const pathwayPart = selectedPathways
+                .filter(p => typeof p === 'string' && p.trim())
+                .map(p => p.replace(/\.[^/.]+$/, '')) // remove extension
+                .join('_');
+
+            myGseaID += `_${pathwayPart}`;
+        }
+
         myGseaID = myGseaID.replace(/[^a-zA-Z0-9]/g, '_');
         return myGseaID
 
-    }, [gidCol, rankCol, subRankCol, groups, OS, isM, mParams, mMethod]);
+    }, [gidCol, rankCol, subRankCol, groups, OS, isM, mParams, mMethod, selectedPathways]);
 
     const [gseaID, setGseaID] = useState(gseaObj.guiParams.gseaID);
     const [waitingGsea, setWaitingGsea] = useState([]);
@@ -191,6 +203,7 @@ function GSEAomic({ omic }) {
 
         // Create identifier
         const myGseaID = getGseaId();
+console.log( myGseaID );
         setGseaID(myGseaID);
 
         // Add GSEA job to waiting list
@@ -335,7 +348,10 @@ function GSEAomic({ omic }) {
                     {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(gseaScriptData)
+                        body: JSON.stringify({
+                            data: gseaScriptData,
+                            cpwFiles: selectedPathways
+                        })
                     }
                 );
 
@@ -441,6 +457,8 @@ function GSEAomic({ omic }) {
                 groups={groups} setGroups={setGroups}
                 handleRunGSEA={handleRunGSEA}
                 ready={waitingGsea.length == 0}
+                selectedPathways={selectedPathways}
+                setSelectedPathways={setSelectedPathways}
             />
             {showGsea &&
                 <MyMotion>

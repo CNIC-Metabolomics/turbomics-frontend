@@ -47,7 +47,9 @@ function ParamSelector({
     subRankCol, setSubRankCol,
     groups, setGroups,
     handleRunGSEA,
-    ready, mMethod
+    ready, mMethod,
+    selectedPathways,
+    setSelectedPathways
 }) {
 
     // check if this is a metabolomics section
@@ -306,8 +308,6 @@ function ParamSelector({
         dispatchResults({ type: 'set-ion-val-opts', ionValOpts: _ionValOpts });
     }
 
-    // Declare the selected custom pathways
-    const [selectedPathways, setSelectedPathways] = useState([]);
 
 
     return (
