@@ -460,7 +460,8 @@ function ParamSelector({ setRId2info, fetchJobRun, setLoading, disabled, setHasR
                                 mdataCategorical,
                                 omicIdCol,
                                 omicIdType,
-                                OS.id
+                                OS.id,
+                                selectedPathways
                             ),
                             selectedPathways
                         );
@@ -576,7 +577,7 @@ const getOmicIdType = (uId, o) => {
     }
 }
 
-const getRunId = (mdataCol, mdataCategorical, omicIdCol, omicIdType, os) => {
+const getRunId = (mdataCol, mdataCategorical, omicIdCol, omicIdType, os, selectedPathways) => {
     let runId = '';
     runId += os + '_' + mdataCol.id;
     if (mdataCategorical.isCategorical) {
@@ -588,6 +589,14 @@ const getRunId = (mdataCol, mdataCategorical, omicIdCol, omicIdType, os) => {
             runId += '_' + omic + '_' + omicIdCol[omic].id + '_' + omicIdType[omic].id;
         }
     });
+    if (Array.isArray(selectedPathways) && selectedPathways.length) {
+        const pathwayPart = selectedPathways
+            .filter(p => typeof p === 'string' && p.trim())
+            .map(p => p.replace(/\.[^/.]+$/, '')) // remove extension
+            .join('_');
+
+        runId += `_${pathwayPart}`;
+    }
     runId = runId.replace(/[^a-zA-Z0-9]/g, '_');
     return runId;
 }
