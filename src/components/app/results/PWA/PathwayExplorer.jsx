@@ -21,14 +21,14 @@ function PathwayExplorer({ view, path_info, rId2info, workingOmics }) {
 
     return (
         <Box sx={{ mt: 2 }}>
-            {view == 'Multi-View' &&
+            {view == 'Single-View' &&
                 <ViewComponent
                     path_info={path_info}
                     rId2info={rId2info}
                     view={view}
                 />
             }
-            {view == 'Single-View' &&
+            {view == 'Multi-View' &&
                 <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-evenly' }}>
                     {workingOmics.map(o => (
                         <Box key={o} sx={{ px: 2, width: `${Math.min(100 / workingOmics.length, 50)}%` }}>
@@ -53,11 +53,11 @@ const ViewComponent = ({ path_info, rId2info, view, omic }) => {
     return (
         <Box sx={{
             display: 'flex',
-            flexDirection: view == 'Multi-View' ? 'row' : 'column',
+            flexDirection: view == 'Single-View' ? 'row' : 'column',
             justifyContent: 'space-evenly'
         }}
         >
-            <Box sx={{ width: view == 'Multi-View' ? '45%' : '98%' }}>
+            <Box sx={{ width: view == 'Single-View' ? '45%' : '98%' }}>
                 <PathwayTable
                     pathwaySelection={pathwaySelection}
                     setPathwaySelection={setPathwaySelection}
@@ -66,10 +66,10 @@ const ViewComponent = ({ path_info, rId2info, view, omic }) => {
                 />
             </Box>
             <Box sx={{
-                width: view == 'Multi-View' ? '45%' : '98%',
+                width: view == 'Single-View' ? '45%' : '98%',
                 display: 'flex',
                 alignItems: 'center',
-                mt: view == 'Single-View' ? 2 : 0
+                mt: view == 'Multi-View' ? 2 : 0
             }}
             >
                 {Object.keys(pathwaySelection).length > 0 &&
@@ -277,7 +277,7 @@ const FeatureTable = ({
     }, [featureInfo]);
 
     const columns = useMemo(() => {
-        const colOmic = view == 'Multi-View' ? [{
+        const colOmic = view == 'Single-View' ? [{
             header: 'Omic',
             accessorKey: 'omicName',
             size: 100

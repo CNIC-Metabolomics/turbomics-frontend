@@ -456,7 +456,7 @@ const resultsTemplate = {
         }
     },
     'PWA': {
-        view: 'Multi-View',
+        view: 'Single-View',
         mdataCol: null,
         mdataCategorical: {
             isCategorical: false,

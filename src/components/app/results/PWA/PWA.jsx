@@ -80,16 +80,6 @@ function PWA({ pwaJob, setPwaJob }) {
     }, [fetchResults]);
 
     // Resume polling ONCE on mount
-    // useEffect(() => {
-
-    //     if ((pwaJob?.status === 'waiting' || pwaJob?.status === '') && pwaJob.runId !== null  ) {
-    //         startPolling(pwaJob.runId);
-    //     }
-
-    //     return () => {
-    //         clearInterval(getResIntervalRef.current);
-    //     };
-    // }, [pwaJob, startPolling]);
     useEffect(() => {
         if (
             hasRun &&

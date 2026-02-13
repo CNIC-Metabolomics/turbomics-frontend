@@ -6,8 +6,8 @@ const ViewSelector = ({ view, setView, disabled, resetJobStatus }) => {
     return (
         <Box sx={{display:'flex', justifyContent:'center'}}>
             <Box sx={{ display: 'flex', width: 350 }}>
-                <ViewButton title='Multi-View' view={view} setView={setView} disabled={disabled} resetJobStatus={resetJobStatus} />
                 <ViewButton title='Single-View' view={view} setView={setView} disabled={disabled} resetJobStatus={resetJobStatus} />
+                <ViewButton title='Multi-View' view={view} setView={setView} disabled={disabled} resetJobStatus={resetJobStatus} />
             </Box>
         </Box>
     )
