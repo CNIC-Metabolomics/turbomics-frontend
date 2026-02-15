@@ -407,7 +407,7 @@ console.log( myGseaID );
         }
 
     }, [OS, API_URL, jobID, gseaID, gseaData, fetchResults,
-        fetchResultsRef, db, isM, omic, fx2i, mParams, mMethod
+        fetchResultsRef, db, isM, omic, fx2i, mParams, mMethod, selectedPathways
     ]);
 
     useEffect(() => {
