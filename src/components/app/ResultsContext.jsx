@@ -62,8 +62,8 @@ function resultsReducer(draft, action) {
         Putative Annotations: CMM && TP
         */
         case 'set-cmm-totals': {
-            draft.CMM.pos = action.pos;
-            draft.CMM.neg = action.neg;
+            if (action.pos) { draft.CMM.pos = action.pos }
+            if (action.neg) { draft.CMM.neg = action.neg }
             draft.CMM.status = 'waiting';
             break;
         }

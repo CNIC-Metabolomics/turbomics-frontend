@@ -30,8 +30,6 @@ function CMMTP() {
 
     const getTPRef = useRef();
 
-    const hasStartedRef = useRef(false);
-
     const dispatchJob = useDispatchJob();
 
     const dispatchResults = useDispatchResults();
@@ -231,9 +229,6 @@ function CMMTP() {
                 dispatchResults({ type: 'set-cmm-error', mode: 'pos', msg: 'TP failed in the Positive Mode' });
                 clearInterval(getTPRef.current);
             }
-            // finally {
-            //     dispatchResults({ type: 'finish-tp-mode', mode: 'pos' });
-            // }
         }
 
         // NEGATIVE
@@ -280,9 +275,6 @@ function CMMTP() {
                 dispatchResults({ type: 'set-tp-error', mode: 'neg', msg: 'TP failed in the Negative Mode' });
                 clearInterval(getTPRef.current);
             }
-            // finally {
-            //     dispatchResults({ type: 'finish-tp-mode', mode: 'neg' });
-            // }
         }
         
         try {
@@ -304,40 +296,75 @@ function CMMTP() {
 
     // Start trigger
     useEffect(() => {
+
         if (!annParams) return;        // do nothing if not configured
-        if (status !== 'idle') return; // jump if putative annottions has been already started
-        if (hasStartedRef.current) return;
 
-        hasStartedRef.current = true;
+        // get and set the CMM && TP results
+        if (status === 'ok') {
 
-        console.log('CMMTP triggered from Annotate button');
+            dispatchJob({ type: 'set-ann-status', status: 'ok' });
 
-        // Initialize the status of job
-        // Initialize totals when mzBatches changes
-        dispatchJob({ type: 'set-ann-status', status: 'waiting' });
-        dispatchResults({
-            type: 'set-cmm-totals',
-            pos: {
-                total: mzBatches.pos.length,
-                done: 0,
-                finished: false
-            },
-            neg: {
-                total: mzBatches.neg.length,
-                done: 0,
-                finished: false
+            // get the POSitive results
+            if ( annParams?.CMM_pos ) {
+                dispatchResults({
+                    type: 'set-cmm-totals',
+                    pos: {
+                        total: mzBatches.pos.length,
+                        done: mzBatches.pos.length
+                    },
+                });
+                dispatchResults({ type: 'finish-cmm-mode', mode: 'pos' });
             }
-        });
-        dispatchResults({ type: 'init-tp-totals' });
+            if ( annParams?.TP_pos ) { dispatchResults({ type: 'finish-tp-mode', mode: 'pos' }) }
 
-        // Do the work
-        requestCMM();
+            // get the NEG results
+            if ( annParams?.CMM_neg ) {
+                dispatchResults({
+                    type: 'set-cmm-totals',
+                    neg: {
+                        total: mzBatches.neg.length,
+                        done: mzBatches.neg.length
+                    },
+                });
+                dispatchResults({ type: 'finish-cmm-mode', mode: 'neg' });
+            }
+            if ( annParams?.TP_neg ) { dispatchResults({ type: 'finish-tp-mode', mode: 'neg' }) }
 
+
+        } else if (status === 'error') {
+            dispatchJob({ type: 'set-ann-status', status: 'error' });
+
+        } else if (status === 'idle' ) {
+
+            console.log('CMM triggered from Annotate button');
+
+            // Initialize the status of job
+            // Initialize totals when mzBatches changes
+            dispatchJob({ type: 'set-ann-status', status: 'waiting' });
+            dispatchResults({
+                type: 'set-cmm-totals',
+                pos: {
+                    total: mzBatches.pos.length,
+                    done: 0,
+                    finished: false
+                },
+                neg: {
+                    total: mzBatches.neg.length,
+                    done: 0,
+                    finished: false
+                }
+            });
+            dispatchResults({ type: 'init-tp-totals' });
+
+            // Do the work
+            requestCMM();
+
+        }
+        else { // status => waiting || running
+            return;
+        }
     }, [annParams, status, mzBatches, requestCMM, dispatchJob, dispatchResults]);
 
-    useEffect(() => {
-        return () => clearInterval(getTPRef.current);
-    }, []);
 
 
     if (!annParams || status === null) {
